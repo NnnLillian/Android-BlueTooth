@@ -35,6 +35,7 @@ public class MainActivity extends Activity {
     TextView statusLabel;
     Button btnConnect,btnSend,btnQuit;
     EditText etReceived,etSend;
+    TextView T,AP,Tc,AF;
 
     //device var
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -56,6 +57,7 @@ public class MainActivity extends Activity {
 
     //接收到的字符串
     String ReceiveData="";
+    String times,pressure,tempreture,flow;
 
     MyHandler handler;
 
@@ -119,24 +121,28 @@ public class MainActivity extends Activity {
             }
         });
 
-        btnSend.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                new SendInfoTask().execute(etSend.getText().toString());
-
-            }
-        });
+//        btnSend.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                // TODO Auto-generated method stub
+//                new SendInfoTask().execute(etSend.getText().toString());
+//
+//            }
+//        });
     }
 
     public void Init()
     {
         statusLabel=(TextView)this.findViewById(R.id.textView1);
+        T=(TextView)this.findViewById(R.id.stoppedTime);
+        AP=(TextView)this.findViewById(R.id.press);
+        Tc=(TextView)this.findViewById(R.id.degree);
+        AF=(TextView)this.findViewById(R.id.flowData);
         btnConnect=(Button)this.findViewById(R.id.button1);
-        btnSend=(Button)this.findViewById(R.id.button2);
+//        btnSend=(Button)this.findViewById(R.id.button2);
         btnQuit=(Button)this.findViewById(R.id.button3);
-        etSend=(EditText)this.findViewById(R.id.editText1);
+//        etSend=(EditText)this.findViewById(R.id.editText1);
         etReceived=(EditText)this.findViewById(R.id.editText2);
     }
 
@@ -327,6 +333,16 @@ public class MainActivity extends Activity {
             }
 
             ReceiveData=ReceiveData+new String(newbuff);
+            String line[]=ReceiveData.split("\n");
+            ReceiveData = line[0];
+            String item[]=ReceiveData.split(" ");
+            Log.e("item",item[1]);
+//            Log.e("item3",item[3]);
+//            times = item[1];
+            ReceiveData = item[1];
+            pressure = item[3];
+            tempreture = item[5];
+//            flow = item[7];
             Log.e("Data",ReceiveData);
 //			System.out.println("result :"+ReceiveData);
             Message msg=Message.obtain();
@@ -348,6 +364,10 @@ public class MainActivity extends Activity {
             switch(msg.what){
                 case 1:
                     etReceived.setText(ReceiveData);
+//                    T.setText(times);
+//                    AP.setText(pressure);
+//                    Tc.setText(tempreture);
+//                    AF.setText(flow);
                     break;
             }
         }
