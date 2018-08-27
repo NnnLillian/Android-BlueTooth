@@ -25,7 +25,7 @@ public class BluetoothReceiver extends BroadcastReceiver{
         if (BluetoothDevice.ACTION_FOUND.equals(action)) { // 发现设备
             Log.e("发现设备：", "[" + btDevice.getName() + "]" + ":" + btDevice.getAddress());
             if (btDevice.getName().contains("HC-02")) { // HC-02设备如果有多个，第一个搜到的那个会被执行。
-                if (btDevice.getBondState() == BluetoothDevice.BOND_NONE){
+                if (btDevice.getBondState() == BluetoothDevice.BOND_BONDED){
                     Log.e("ywq","attemp to bond:"+"["+ btDevice.getName() + "]");
                     try {
                         //通过工具类ClsUtils调用createBond方法
