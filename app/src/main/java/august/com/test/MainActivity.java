@@ -57,7 +57,10 @@ public class MainActivity extends Activity {
 
     //接收到的字符串
     String ReceiveData="";
-    String times,pressure,tempreture,flow;
+    String times="";
+    String pressure="";
+    String tempretures="";
+    String flow="";
 
     MyHandler handler;
 
@@ -135,7 +138,7 @@ public class MainActivity extends Activity {
     public void Init()
     {
         statusLabel=(TextView)this.findViewById(R.id.textView1);
-        T=(TextView)this.findViewById(R.id.stoppedTime);
+        T=(TextView) this.findViewById(R.id.stoppedTime);
         AP=(TextView)this.findViewById(R.id.press);
         Tc=(TextView)this.findViewById(R.id.degree);
         AF=(TextView)this.findViewById(R.id.flowData);
@@ -143,7 +146,7 @@ public class MainActivity extends Activity {
 //        btnSend=(Button)this.findViewById(R.id.button2);
         btnQuit=(Button)this.findViewById(R.id.button3);
 //        etSend=(EditText)this.findViewById(R.id.editText1);
-        etReceived=(EditText)this.findViewById(R.id.editText2);
+//        etReceived=(EditText)this.findViewById(R.id.editText2);
     }
 
     public void InitBluetooth()
@@ -210,7 +213,7 @@ public class MainActivity extends Activity {
             }
 
 
-            return "蓝牙连接正常,Socket 创建成功";
+            return "蓝牙连接正常";
         }
 
         @Override    //这个方法是在主线程中运行的，所以可以更新界面
@@ -332,17 +335,18 @@ public class MainActivity extends Activity {
                 newbuff[j]=buff[j];
             }
 
-            ReceiveData=ReceiveData+new String(newbuff);
+//            ReceiveData=ReceiveData+new String(newbuff);
+            ReceiveData=new String(newbuff);
             String line[]=ReceiveData.split("\n");
             ReceiveData = line[0];
             String item[]=ReceiveData.split(" ");
             Log.e("item",item[1]);
 //            Log.e("item3",item[3]);
-//            times = item[1];
-            ReceiveData = item[1];
+            times = item[1];
+//            ReceiveData = item[1];
             pressure = item[3];
-            tempreture = item[5];
-//            flow = item[7];
+            tempretures = item[5];
+            flow = item[6];
             Log.e("Data",ReceiveData);
 //			System.out.println("result :"+ReceiveData);
             Message msg=Message.obtain();
@@ -363,11 +367,11 @@ public class MainActivity extends Activity {
 
             switch(msg.what){
                 case 1:
-                    etReceived.setText(ReceiveData);
-//                    T.setText(times);
-//                    AP.setText(pressure);
-//                    Tc.setText(tempreture);
-//                    AF.setText(flow);
+//                    etReceived.setText(ReceiveData);
+                    T.setText(times);
+                    AP.setText(pressure);
+                    Tc.setText(tempretures);
+                    AF.setText(flow);
                     break;
             }
         }
