@@ -10,14 +10,31 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/flow"
+        android:id="@+id/second"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="64dp"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="72dp"
+        android:text="S"
+        app:layout_constraintBottom_toBottomOf="@+id/stop"
+        app:layout_constraintStart_toEndOf="@+id/stoppedTime" />
+
+    <TextView
+        android:id="@+id/slm2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SLM"
+        app:layout_constraintBottom_toBottomOf="@+id/LeakSize"
+        app:layout_constraintStart_toEndOf="@+id/result" />
+
+    <TextView
+        android:id="@+id/flow"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="88dp"
         android:text="Air Flow："
         android:textSize="24sp"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,142 +42,156 @@
         android:id="@+id/stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="64dp"
-        android:layout_marginStart="64dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Stopped："
+        android:text="Start Time："
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flowData" />
+        app:layout_constraintTop_toBottomOf="@+id/flow" />
 
     <TextView
         android:id="@+id/temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="64dp"
-        android:layout_marginStart="64dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="CaseTemp："
+        android:text="Chamber Temp："
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stoppedTime" />
+        app:layout_constraintTop_toBottomOf="@+id/stop" />
 
     <TextView
         android:id="@+id/pressure"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="64dp"
-        android:layout_marginStart="64dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="Pressure："
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/degree" />
+        app:layout_constraintTop_toBottomOf="@+id/temperature" />
+
+    <TextView
+        android:id="@+id/LeakSize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Leak Size："
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <TextView
         android:id="@+id/degree"
         android:layout_width="wrap_content"
-        android:layout_height="42dp"
-        android:layout_marginLeft="84dp"
-        android:layout_marginStart="84dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:text="00.0"
         android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/temperature" />
+        app:layout_constraintBottom_toBottomOf="@+id/temperature"
+        app:layout_constraintStart_toEndOf="@+id/temperature"
+        app:layout_constraintTop_toTopOf="@+id/temperature" />
 
     <TextView
         android:id="@+id/stoppedTime"
         android:layout_width="wrap_content"
         android:layout_height="42dp"
-        android:layout_marginLeft="84dp"
-        android:layout_marginStart="84dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:text="0.00"
         android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stop" />
+        app:layout_constraintBottom_toBottomOf="@+id/stop"
+        app:layout_constraintStart_toEndOf="@+id/stop"
+        app:layout_constraintTop_toTopOf="@+id/stop" />
 
     <TextView
         android:id="@+id/press"
         android:layout_width="wrap_content"
-        android:layout_height="42dp"
-        android:layout_marginLeft="84dp"
-        android:layout_marginStart="84dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:text="00.0"
         android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pressure" />
+        app:layout_constraintBottom_toBottomOf="@+id/pressure"
+        app:layout_constraintStart_toEndOf="@+id/pressure"
+        app:layout_constraintTop_toTopOf="@+id/pressure" />
 
     <TextView
         android:id="@+id/flowData"
         android:layout_width="wrap_content"
-        android:layout_height="42dp"
-        android:layout_marginLeft="84dp"
-        android:layout_marginStart="84dp"
-        android:layout_marginTop="8dp"
-        android:text="AF:0.00"
+        android:layout_height="wrap_content"
+        android:text="0.00"
         android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flow" />
+        app:layout_constraintBottom_toBottomOf="@+id/flow"
+        app:layout_constraintStart_toEndOf="@+id/flow"
+        app:layout_constraintTop_toTopOf="@+id/flow" />
+
+    <TextView
+        android:id="@+id/result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.00"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/LeakSize"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/LeakSize"
+        app:layout_constraintTop_toTopOf="@+id/LeakSize" />
 
     <TextView
         android:id="@+id/slm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
         android:text="SLM"
-        app:layout_constraintStart_toEndOf="@+id/flowData"
-        app:layout_constraintTop_toBottomOf="@+id/flow" />
+        app:layout_constraintBottom_toBottomOf="@+id/flow"
+        app:layout_constraintStart_toEndOf="@+id/flowData" />
 
     <TextView
         android:id="@+id/c"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:text="。"
-        android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/degree"
-        app:layout_constraintTop_toBottomOf="@+id/temperature" />
+        android:text="℃"
+        android:textAllCaps="false"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/degree"
+        app:layout_constraintStart_toEndOf="@+id/degree" />
 
     <TextView
         android:id="@+id/kpa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
         android:text="KPA"
-        app:layout_constraintStart_toEndOf="@+id/press"
-        app:layout_constraintTop_toBottomOf="@+id/pressure" />
+        app:layout_constraintBottom_toBottomOf="@+id/pressure"
+        app:layout_constraintStart_toEndOf="@+id/press" />
 
     <!--<TextView-->
-        <!--android:id="@+id/motor"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="32dp"-->
-        <!--android:layout_marginLeft="32dp"-->
-        <!--android:layout_marginStart="32dp"-->
-        <!--android:text="Motor"-->
-        <!--android:textSize="24sp"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintStart_toStartOf="parent" />-->
+    <!--android:id="@+id/motor"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="32dp"-->
+    <!--android:layout_marginLeft="32dp"-->
+    <!--android:layout_marginStart="32dp"-->
+    <!--android:text="Motor"-->
+    <!--android:textSize="24sp"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintStart_toStartOf="parent" />-->
 
     <!--<TextView-->
-        <!--android:id="@+id/percent"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="32dp"-->
-        <!--android:layout_marginLeft="8dp"-->
-        <!--android:layout_marginStart="8dp"-->
-        <!--android:text="98%"-->
-        <!--android:textSize="24sp"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintStart_toEndOf="@+id/motor" />-->
+    <!--android:id="@+id/percent"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="32dp"-->
+    <!--android:layout_marginLeft="8dp"-->
+    <!--android:layout_marginStart="8dp"-->
+    <!--android:text="98%"-->
+    <!--android:textSize="24sp"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintStart_toEndOf="@+id/motor" />-->
 
     <Button
         android:id="@+id/button1"
@@ -188,9 +219,9 @@
         <!--android:id="@+id/button2"-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="16dp"-->
-        <!--android:layout_marginEnd="16dp"-->
-        <!--android:layout_marginRight="16dp"-->
+        <!--android:layout_marginBottom="116dp"-->
+        <!--android:layout_marginEnd="52dp"-->
+        <!--android:layout_marginRight="52dp"-->
         <!--android:text="发送"-->
         <!--app:layout_constraintBottom_toBottomOf="parent"-->
         <!--app:layout_constraintEnd_toEndOf="parent" />-->
@@ -206,11 +237,61 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pressure" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/LeakSize" />
+
+    <Button
+        android:id="@+id/off"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="OFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/on"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="ON"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/off" />
+
     <!--<EditText-->
         <!--android:id="@+id/editText1"-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="16dp"-->
+        <!--android:layout_marginBottom="116dp"-->
         <!--android:layout_marginLeft="16dp"-->
         <!--android:layout_marginStart="16dp"-->
         <!--android:ems="10"-->
@@ -218,7 +299,7 @@
         <!--app:layout_constraintStart_toStartOf="parent" />-->
 
     <!--<EditText-->
-        <!--android:id="@+id/stoppedTime"-->
+        <!--android:id="@+id/editText2"-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
         <!--android:layout_marginBottom="8dp"-->
@@ -231,8 +312,9 @@
         <!--android:inputType="textMultiLine"-->
         <!--app:layout_constraintBottom_toBottomOf="parent"-->
         <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_bias="0.0"-->
         <!--app:layout_constraintStart_toStartOf="parent"-->
         <!--app:layout_constraintTop_toBottomOf="@+id/textView1"-->
-        <!--app:layout_constraintVertical_bias="0.38" />-->
+        <!--app:layout_constraintVertical_bias="0.859" />-->
 
 </android.support.constraint.ConstraintLayout>

@@ -33,9 +33,9 @@ public class MainActivity extends Activity {
 
     //定义组件
     TextView statusLabel;
-    Button btnConnect,btnSend,btnQuit;
+    Button btnConnect,btnSend,btnQuit,btnOn,btnOff;
     EditText etReceived,etSend;
-    TextView T,AP,Tc,AF;
+    TextView T,AP,Tc,AF,LS;
 
     //device var
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -61,6 +61,11 @@ public class MainActivity extends Activity {
     String pressure="";
     String tempretures="";
     String flow="";
+    double flows;
+    String LeakResult="";
+    double LeakResults;
+    String ON="ON";
+    String OFF="OFF";
 
     MyHandler handler;
 
@@ -109,6 +114,12 @@ public class MainActivity extends Activity {
                             rThread.join();
                         }
                         statusLabel.setText("当前连接已断开");
+
+                        T.setText("0.00");
+                        AP.setText("00.0");
+                        Tc.setText("00.0");
+                        AF.setText("0.00");
+                        LS.setText("0.00");
 //						etReceived.setText("");
                     } catch (IOException e) {
 
@@ -133,6 +144,24 @@ public class MainActivity extends Activity {
 //
 //            }
 //        });
+        btnOn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                new SendInfoTask().execute(ON);
+
+            }
+        });
+        btnOff.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                new SendInfoTask().execute(OFF);
+
+            }
+        });
     }
 
     public void Init()
@@ -142,8 +171,11 @@ public class MainActivity extends Activity {
         AP=(TextView)this.findViewById(R.id.press);
         Tc=(TextView)this.findViewById(R.id.degree);
         AF=(TextView)this.findViewById(R.id.flowData);
+        LS=(TextView)this.findViewById(R.id.result);
         btnConnect=(Button)this.findViewById(R.id.button1);
 //        btnSend=(Button)this.findViewById(R.id.button2);
+        btnOn=(Button)this.findViewById(R.id.on);
+        btnOff=(Button)this.findViewById(R.id.off);
         btnQuit=(Button)this.findViewById(R.id.button3);
 //        etSend=(EditText)this.findViewById(R.id.editText1);
 //        etReceived=(EditText)this.findViewById(R.id.editText2);
@@ -246,7 +278,7 @@ public class MainActivity extends Activity {
             statusLabel.setText(result);
 
             //将发送框清空
-            etSend.setText("");
+//            etSend.setText("");
         }
 
         @Override
@@ -330,29 +362,36 @@ public class MainActivity extends Activity {
 
             byte[] newbuff=new byte[length];  //newbuff字节数组，用于存放真正接收到的数据
 
-            for(int j=0;j<length;j++)
-            {
-                newbuff[j]=buff[j];
-            }
+            if (length > 30) {
+                for (int j = 0; j < length; j++) {
+                    newbuff[j] = buff[j];
+                }
 
 //            ReceiveData=ReceiveData+new String(newbuff);
-            ReceiveData=new String(newbuff);
-            String line[]=ReceiveData.split("\n");
-            ReceiveData = line[0];
-            String item[]=ReceiveData.split(" ");
-            Log.e("item",item[1]);
+                ReceiveData = new String(newbuff);
+                String line[] = ReceiveData.split("\n");
+                ReceiveData = line[0];
+                String item[] = ReceiveData.split(" ");
+                Log.e("item", item[1]);
 //            Log.e("item3",item[3]);
-            times = item[1];
+                times = item[1];
 //            ReceiveData = item[1];
-            pressure = item[3];
-            tempretures = item[5];
-            flow = item[6];
-            Log.e("Data",ReceiveData);
+                pressure = item[3];
+                tempretures = item[5];
+                flow = item[6].substring(3).replaceAll("\r", "");
+                flows = Double.parseDouble(flow);
+                LeakResults = flows / 2;
+                LeakResult = String.valueOf(LeakResults);
+                Log.e("Data", ReceiveData);
 //			System.out.println("result :"+ReceiveData);
-            Message msg=Message.obtain();
-            msg.what=1;
-            handler.sendMessage(msg);  //发送消息:系统会自动调用handleMessage( )方法来处理消息
-
+                Message msg = Message.obtain();
+                msg.what = 1;
+                handler.sendMessage(msg);  //发送消息:系统会自动调用handleMessage( )方法来处理消息
+            }else {
+                Message msg = Message.obtain();
+                msg.what = 2;
+                handler.sendMessage(msg);
+            }
         }
 
     }
@@ -372,6 +411,9 @@ public class MainActivity extends Activity {
                     AP.setText(pressure);
                     Tc.setText(tempretures);
                     AF.setText(flow);
+                    LS.setText(LeakResult);
+                    break;
+                case 2:
                     break;
             }
         }
