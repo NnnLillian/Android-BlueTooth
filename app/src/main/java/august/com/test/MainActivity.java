@@ -113,7 +113,7 @@ public class MainActivity extends Activity {
                         {
                             rThread.join();
                         }
-                        statusLabel.setText("当前连接已断开");
+                        statusLabel.setText("Disconnect Bluetooth connection");
 
                         T.setText("0.00");
                         AP.setText("00.0");
@@ -187,7 +187,7 @@ public class MainActivity extends Activity {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(mBluetoothAdapter == null)
         {
-            Toast.makeText(this, "你的手机不支持蓝牙", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No supporting Bluetooth", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -224,12 +224,12 @@ public class MainActivity extends Activity {
 
                 try {
                     btSocket.close();
-                    return "Socket 创建失败";
+                    return "Socket succeeded";
 
                 } catch (IOException e2) {
 
                     Log .e("error","ON RESUME: Unable to close socket during connection failure", e2);
-                    return "Socket 关闭失败";
+                    return "Socket failed";
                 }
 
             }
@@ -241,11 +241,11 @@ public class MainActivity extends Activity {
 
             } catch (IOException e) {
                 Log.e("error", "ON RESUME: Output stream creation failed.", e);
-                return "Socket 流创建失败";
+                return "Socket stream failed";
             }
 
 
-            return "蓝牙连接正常";
+            return "Connected";
         }
 
         @Override    //这个方法是在主线程中运行的，所以可以更新界面
@@ -287,7 +287,7 @@ public class MainActivity extends Activity {
 
             if(btSocket==null)
             {
-                return "还没有创建连接";
+                return "No connection";
             }
 
             if(arg0[0].length()>0)//不是空白串
@@ -302,12 +302,12 @@ public class MainActivity extends Activity {
 
                 } catch (IOException e) {
                     Log.e("error", "ON RESUME: Exception during write.", e);
-                    return "发送失败";
+                    return "Fail";
                 }
 
             }
 
-            return "发送成功";
+            return "Success";
         }
 
     }
@@ -380,8 +380,9 @@ public class MainActivity extends Activity {
                 tempretures = item[5];
                 flow = item[6].substring(3).replaceAll("\r", "");
                 flows = Double.parseDouble(flow);
-                LeakResults = flows / 2;
-                LeakResult = String.valueOf(LeakResults);
+                LeakResults = flows * 0.05 + 0.015;
+                // 保留小数点后两位
+                LeakResult = String.format("%.2f", LeakResults).toString();
                 Log.e("Data", ReceiveData);
 //			System.out.println("result :"+ReceiveData);
                 Message msg = Message.obtain();
