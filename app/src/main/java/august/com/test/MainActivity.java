@@ -362,7 +362,7 @@ public class MainActivity extends Activity {
 
             byte[] newbuff=new byte[length];  //newbuff字节数组，用于存放真正接收到的数据
 
-            if (length > 30) {
+            if (length > 20) {
                 for (int j = 0; j < length; j++) {
                     newbuff[j] = buff[j];
                 }
@@ -371,14 +371,14 @@ public class MainActivity extends Activity {
                 ReceiveData = new String(newbuff);
                 String line[] = ReceiveData.split("\n");
                 ReceiveData = line[0];
-                String item[] = ReceiveData.split(" ");
-                Log.e("item", item[1]);
+//                String item[] = ReceiveData.split(" ");
+//                Log.e("item", item[1]);
 //            Log.e("item3",item[3]);
-                times = item[1];
+                times = ReceiveData.substring(2,6);
 //            ReceiveData = item[1];
-                pressure = item[3];
-                tempretures = item[5];
-                flow = item[6].substring(3).replaceAll("\r", "");
+                pressure = ReceiveData.substring(10,14);
+                tempretures = ReceiveData.substring(19,23);
+                flow = ReceiveData.substring(27,31);
                 flows = Double.parseDouble(flow);
                 LeakResults = flows * 0.05 + 0.015;
                 // 保留小数点后两位
