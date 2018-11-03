@@ -8,7 +8,7 @@ import android.util.Log;
 
 public class BluetoothReceiver extends BroadcastReceiver{
 
-    String pin = "1234";//为连接设备的初始密码
+//    String pin = "1234";//为连接设备的初始密码
     public BluetoothReceiver(){
 
     }
@@ -24,7 +24,7 @@ public class BluetoothReceiver extends BroadcastReceiver{
 
         if (BluetoothDevice.ACTION_FOUND.equals(action)) { // 发现设备
             Log.e("发现设备：", "[" + btDevice.getName() + "]" + ":" + btDevice.getAddress());
-            if (btDevice.getName().contains("HC-02")) { // HC-02设备如果有多个，第一个搜到的那个会被执行。
+            if (btDevice.getName()!=null) {
                 if (btDevice.getBondState() == BluetoothDevice.BOND_BONDED){
                     Log.e("ywq","attemp to bond:"+"["+ btDevice.getName() + "]");
                     try {
@@ -50,7 +50,7 @@ public class BluetoothReceiver extends BroadcastReceiver{
                     Log.i("order...", "isOrderedBroadcast:"+isOrderedBroadcast()+",isInitialStickyBroadcast:"+isInitialStickyBroadcast());
                     abortBroadcast();//如果没有将广播终止，则会出现一个一闪而过的配对框。
                     //3.调用setPin方法进行配对...
-                    boolean ret = ClsUtils.setPin(btDevice.getClass(), btDevice, pin);
+//                    boolean ret = ClsUtils.setPin(btDevice.getClass(), btDevice, pin);
 
                 } catch (Exception e) {
                     // TODO Auto-generated catch block

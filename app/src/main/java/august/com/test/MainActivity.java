@@ -3,15 +3,23 @@ package august.com.test;
 import android.bluetooth.BluetoothAdapter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,6 +44,11 @@ public class MainActivity extends Activity {
     Button btnConnect,btnSend,btnQuit,btnOn,btnOff;
     EditText etReceived,etSend;
     TextView T,AP,Tc,AF,LS;
+    Toolbar toolbar;
+    Spinner spinner;
+    List<String>  data_list;
+    List<String>  address_list;
+    ArrayAdapter<String> arr_adapter;
 
     //device var
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -50,8 +63,9 @@ public class MainActivity extends Activity {
     private static final UUID MY_UUID =
             UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
-    private static String address = "00:0C:BF:17:66:0F"; // <==要连接的目标蓝牙设备MAC地址
+//    private static String address = "00:0C:BF:17:66:0F"; // <==要连接的目标蓝牙设备MAC地址
 
+    String address="";
 
     private ReceiveThread rThread=null;  //数据接收线程
 
@@ -81,15 +95,53 @@ public class MainActivity extends Activity {
 
         handler=new MyHandler();
 
+        //判断蓝牙是否打开
+        if(!mBluetoothAdapter.isEnabled())
+        {
+            mBluetoothAdapter.enable();
+        }
+        mBluetoothAdapter.startDiscovery();
+
+        data_list=new ArrayList<String>();
+        address_list=new ArrayList<String>();
+
+        // 寻找已经配对设备
+        Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
+        if (devices.size()>0){
+            for (Iterator<BluetoothDevice> it = devices.iterator(); it.hasNext();){
+                BluetoothDevice device = (BluetoothDevice)it.next();
+                data_list.add(device.getName());
+                address_list.add(device.getAddress());
+                Log.e("设备：", "[" + device.getName() + "]" + ":" + device.getAddress());
+            }
+        }else {
+            Log.e("sorry","no device bonded");
+        }
+
+        // 下拉菜单定义一个数组适配器，这个数组适配器就用到之前定义的data_list，装的都是list所添加的内容
+        arr_adapter = new ArrayAdapter<String>(this, R.layout.spinner_item, data_list);
+        // 为适配器设置下来菜单样式
+        arr_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // 以上声明完毕后，加载适配器
+        spinner.setAdapter(arr_adapter);
+        // 为下拉列表设置各种点击事件，一响应菜单中的文本item被选中，用setOnItemSelectedListener
+        spinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener(){
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3){
+                // TODO Auto-generated method stub
+                // 所执行事件
+                address = address_list.get(arg2);
+                Log.e("address: ",address);
+                Toast.makeText(getApplicationContext(),"选择的是"+arr_adapter.getItem(arg2), Toast.LENGTH_LONG).show();
+            }
+
+            public void onNothingSelected(AdapterView<?> arg0){
+                Toast.makeText(getApplicationContext(),"nothing",Toast.LENGTH_LONG).show();
+            }
+        });
+
         btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //判断蓝牙是否打开
-                if(!mBluetoothAdapter.isEnabled())
-                {
-                    mBluetoothAdapter.enable();
-                }
-                mBluetoothAdapter.startDiscovery();
 
                 //创建连接
                 new ConnectTask().execute(address);
@@ -177,6 +229,8 @@ public class MainActivity extends Activity {
         btnOn=(Button)this.findViewById(R.id.on);
         btnOff=(Button)this.findViewById(R.id.off);
         btnQuit=(Button)this.findViewById(R.id.button3);
+        toolbar=(Toolbar)this.findViewById(R.id.toolbar);
+        spinner=(Spinner)this.findViewById(R.id.spinner);
 //        etSend=(EditText)this.findViewById(R.id.editText1);
 //        etReceived=(EditText)this.findViewById(R.id.editText2);
     }
