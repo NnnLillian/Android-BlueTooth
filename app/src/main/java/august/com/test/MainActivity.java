@@ -1,5 +1,6 @@
 package august.com.test;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -49,6 +50,7 @@ public class MainActivity extends Activity {
     List<String>  data_list;
     List<String>  address_list;
     ArrayAdapter<String> arr_adapter;
+    AlertDialog.Builder builder;
 
     //device var
     private BluetoothAdapter mBluetoothAdapter = null;
@@ -81,6 +83,8 @@ public class MainActivity extends Activity {
     String ON="ON";
     String OFF="OFF";
 
+    Boolean btn_click = false;
+    Boolean connect_click = false;
     MyHandler handler;
 
 
@@ -115,6 +119,11 @@ public class MainActivity extends Activity {
                 Log.e("设备：", "[" + device.getName() + "]" + ":" + device.getAddress());
             }
         }else {
+            builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle("Remind");
+            builder.setMessage("Sorry, No paired bluetooth devices now, Please pair the bluetooth device first");
+            builder.setPositiveButton("OK",null);
+            builder.show();
             Log.e("sorry","no device bonded");
         }
 
@@ -142,9 +151,15 @@ public class MainActivity extends Activity {
         btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //创建连接
-                new ConnectTask().execute(address);
+                if (!btn_click){
+                    btn_click = true;
+                    //创建连接
+                    new ConnectTask().execute(address);
+                    btnConnect.setActivated(btn_click);
+                }else {
+                    btn_click = false;
+                    btnConnect.setActivated(btn_click);
+                }
 
             }
         });
@@ -155,7 +170,10 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-
+                if (btn_click){
+                    btn_click=false;
+                    btnConnect.setActivated(btn_click);
+                }
                 if(btSocket!=null)
                 {
                     try {
@@ -201,7 +219,11 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                new SendInfoTask().execute(ON);
+                if (!connect_click){
+                    connect_click = true;
+                    new SendInfoTask().execute(ON);
+                    btnOn.setActivated(connect_click);
+                }
 
             }
         });
@@ -210,7 +232,11 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                new SendInfoTask().execute(OFF);
+                if (connect_click) {
+                    connect_click = false;
+                    new SendInfoTask().execute(OFF);
+                    btnOn.setActivated(connect_click);
+                }
 
             }
         });
@@ -428,10 +454,10 @@ public class MainActivity extends Activity {
 //                String item[] = ReceiveData.split(" ");
 //                Log.e("item", item[1]);
 //            Log.e("item3",item[3]);
-                times = ReceiveData.substring(2,6);
+                times = ReceiveData.substring(1,6);
 //            ReceiveData = item[1];
                 pressure = ReceiveData.substring(10,14);
-                tempretures = ReceiveData.substring(19,23);
+                tempretures = ReceiveData.substring(18,23);
                 flow = ReceiveData.substring(27,31);
                 flows = Double.parseDouble(flow);
                 LeakResults = flows * 0.05 + 0.015;
