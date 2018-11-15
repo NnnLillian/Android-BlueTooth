@@ -85,6 +85,7 @@ public class MainActivity extends Activity {
 
     Boolean btn_click = false;
     Boolean connect_click = false;
+    Boolean enable_click = true;
     MyHandler handler;
 
 
@@ -151,14 +152,16 @@ public class MainActivity extends Activity {
         btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!btn_click){
+                if (!btn_click && enable_click){
                     btn_click = true;
                     //创建连接
                     new ConnectTask().execute(address);
                     btnConnect.setActivated(btn_click);
+                    statusLabel.setText("Connecting");
+                    enable_click = false;
+                    btnConnect.setEnabled(enable_click);
                 }else {
-                    btn_click = false;
-                    btnConnect.setActivated(btn_click);
+                    Toast.makeText(getApplicationContext(),"Don't click repeatedly",Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -173,6 +176,8 @@ public class MainActivity extends Activity {
                 if (btn_click){
                     btn_click=false;
                     btnConnect.setActivated(btn_click);
+                    enable_click = true;
+                    btnConnect.setEnabled(enable_click);
                 }
                 if(btSocket!=null)
                 {
@@ -183,7 +188,7 @@ public class MainActivity extends Activity {
                         {
                             rThread.join();
                         }
-                        statusLabel.setText("Disconnect Bluetooth connection");
+                        statusLabel.setText("No Connection");
 
                         T.setText("0.00");
                         AP.setText("00.0");
@@ -301,7 +306,7 @@ public class MainActivity extends Activity {
                 Log.e("error", "ON RESUME: BT connection established, data transfer link open.");
 
             } catch (IOException e) {
-
+                e.printStackTrace();
                 try {
                     btSocket.close();
                     return "Socket succeeded";
