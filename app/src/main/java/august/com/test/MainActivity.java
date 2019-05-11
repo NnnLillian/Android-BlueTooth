@@ -38,6 +38,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 public class MainActivity extends Activity {
 
     //定义组件
@@ -153,13 +155,18 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (!btn_click && enable_click){
-                    btn_click = true;
-                    //创建连接
-                    new ConnectTask().execute(address);
-                    btnConnect.setActivated(btn_click);
-                    statusLabel.setText("Connecting");
-                    enable_click = false;
-                    btnConnect.setEnabled(enable_click);
+                    if (address !=null){
+                        btn_click = true;
+                        //创建连接
+                        new ConnectTask().execute(address);
+                        btnConnect.setActivated(btn_click);
+                        statusLabel.setText("Connecting");
+                        enable_click = false;
+                        btnConnect.setEnabled(enable_click);
+                        enable_click = true;
+                    } else {
+                        statusLabel.setText("Nothing be selected");
+                    }
                 }else {
                     Toast.makeText(getApplicationContext(),"Don't click repeatedly",Toast.LENGTH_LONG).show();
                 }
@@ -225,6 +232,7 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 if (!connect_click){
+                    btnOn.setEnabled(enable_click);
                     connect_click = true;
                     new SendInfoTask().execute(ON);
                     btnOn.setActivated(connect_click);
@@ -303,13 +311,14 @@ public class MainActivity extends Activity {
 
                 btSocket.connect();
 
-                Log.e("error", "ON RESUME: BT connection established, data transfer link open.");
+                Log.e("message", "ON RESUME: BT connection established, data transfer link open.");
 
             } catch (IOException e) {
                 e.printStackTrace();
                 try {
                     btSocket.close();
-                    return "Socket succeeded";
+                    enable_click = false;
+                    return "Socket succeeded  Connect fail";
 
                 } catch (IOException e2) {
 
@@ -453,17 +462,29 @@ public class MainActivity extends Activity {
                 }
 
 //            ReceiveData=ReceiveData+new String(newbuff);
+                System.out.println(newbuff);
                 ReceiveData = new String(newbuff);
                 String line[] = ReceiveData.split("\n");
                 ReceiveData = line[0];
-//                String item[] = ReceiveData.split(" ");
+                System.out.println(ReceiveData);
+//String item[] = pureData.split(":");
 //                Log.e("item", item[1]);
-//            Log.e("item3",item[3]);
+//                Log.e("item3",item[3]);
                 times = ReceiveData.substring(1,6);
-//            ReceiveData = item[1];
-                pressure = ReceiveData.substring(10,14);
-                tempretures = ReceiveData.substring(18,23);
-                flow = ReceiveData.substring(27,31);
+                String timeStr = ReceiveData.substring(0,7);
+                String pureData = ReceiveData.replace(timeStr,"");
+                System.out.println(pureData);
+                String p = pureData.substring(pureData.indexOf(":")+1,pureData.indexOf("T"));
+                System.out.println(p.replace(" ", "0"));
+                pureData = pureData.substring(pureData.indexOf("T"));
+                String t = pureData.substring(pureData.indexOf(":")+1,pureData.indexOf("A"));
+                System.out.println(t.replace(" ", "0"));
+                pureData = pureData.substring(pureData.indexOf("A"));
+                String f = pureData.substring(pureData.indexOf(":")+1);
+                System.out.println(f.replace(" ", "0"));
+                pressure = p.replace(" ", "0");
+                tempretures = t.replace(" ", "0");
+                flow = f.replace(" ", "0");
                 flows = Double.parseDouble(flow);
                 LeakResults = flows * 0.05 + 0.015;
                 // 保留小数点后两位
