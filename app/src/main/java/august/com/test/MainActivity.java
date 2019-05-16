@@ -2,6 +2,7 @@ package august.com.test;
 
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -88,7 +89,7 @@ public class MainActivity extends Activity {
 
     Boolean btn_click = false;
     Boolean connect_click = false;
-    Boolean enable_click = true;
+    Boolean enable_click = false;
     MyHandler handler;
 
 
@@ -153,16 +154,14 @@ public class MainActivity extends Activity {
         btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!btn_click && enable_click) {
+                if (!btn_click) {
                     if (address != null) {
                         btn_click = true;
                         //创建连接
                         new ConnectTask().execute(address);
                         btnConnect.setActivated(btn_click);
                         statusLabel.setText("Connecting");
-                        enable_click = false;
-                        btnConnect.setEnabled(enable_click);
-                        enable_click = true;
+                        // btnConnect.setEnabled(enable_click);
                     } else {
                         statusLabel.setText("Nothing be selected");
                     }
@@ -271,6 +270,9 @@ public class MainActivity extends Activity {
         spinner = (Spinner) this.findViewById(R.id.spinner);
 //        etSend=(EditText)this.findViewById(R.id.editText1);
 //        etReceived=(EditText)this.findViewById(R.id.editText2);
+
+        btnOn.setEnabled(enable_click);
+        btnOff.setEnabled(enable_click);
     }
 
     public void InitBluetooth() {
@@ -303,29 +305,21 @@ public class MainActivity extends Activity {
             try {
 
                 btSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
-
-
                 btSocket.connect();
-
                 Log.e("message", "ON RESUME: BT connection established, data transfer link open.");
-
             } catch (IOException e) {
                 e.printStackTrace();
                 try {
                     btSocket.close();
                     enable_click = false;
                     return "Socket succeeded  Connect fail";
-
                 } catch (IOException e2) {
-
                     Log.e("error", "ON RESUME: Unable to close socket during connection failure", e2);
                     return "Socket failed";
                 }
-
             }
             //取消搜索
             mBluetoothAdapter.cancelDiscovery();
-
             try {
                 outStream = btSocket.getOutputStream();
 
@@ -333,8 +327,8 @@ public class MainActivity extends Activity {
                 Log.e("error", "ON RESUME: Output stream creation failed.", e);
                 return "Socket stream failed";
             }
-
-
+            enable_click = true;
+            btnOn.setBackgroundColor(Color.parseColor("#d14246"));
             return "Connected";
         }
 
