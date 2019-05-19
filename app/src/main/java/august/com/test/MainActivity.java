@@ -328,7 +328,8 @@ public class MainActivity extends Activity {
                 return "Socket stream failed";
             }
             enable_click = true;
-            btnOn.setBackgroundColor(Color.parseColor("#d14246"));
+//            btnOn.setBackgroundColor(Color.parseColor("#d14246"));
+            btnConnect.setBackgroundColor(Color.parseColor("#327475"));
             return "Connected";
         }
 
