@@ -75,6 +75,8 @@ public class MainActivity extends Activity {
 
     private ReceiveThread rThread = null;  //数据接收线程
 
+    private ConnectTask task;
+
     //接收到的字符串
     String ReceiveData = "";
     String times = "";
@@ -156,12 +158,13 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 if (!btn_click) {
                     if (address != null) {
-                        btn_click = true;
+//                        btn_click = true;
                         //创建连接
-                        new ConnectTask().execute(address);
-                        btnConnect.setActivated(btn_click);
+                        task = new ConnectTask();
+                        task.execute(address);
+//                        btnConnect.setActivated(btn_click);
                         statusLabel.setText("Connecting");
-                        // btnConnect.setEnabled(enable_click);
+                        btnConnect.setEnabled(btn_click);
                     } else {
                         statusLabel.setText("Nothing be selected");
                     }
@@ -178,12 +181,12 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                if (btn_click) {
-                    btn_click = false;
-                    btnConnect.setActivated(btn_click);
-                    enable_click = true;
-                    btnConnect.setEnabled(enable_click);
-                }
+                task.cancel(true);
+                btnConnect.setActivated(false);
+                btnConnect.setEnabled(true);
+                btnOn.setActivated(false);
+                btnOn.setEnabled(false);
+                btnOff.setEnabled(false);
                 if (btSocket != null) {
                     try {
                         btSocket.close();
@@ -295,15 +298,11 @@ public class MainActivity extends Activity {
 
     //连接蓝牙设备的异步任务
     class ConnectTask extends AsyncTask<String, String, String> {
-
-
         @Override
         protected String doInBackground(String... params) {
             // TODO Auto-generated method stub
             BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(params[0]);
-
             try {
-
                 btSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
                 btSocket.connect();
                 Log.e("message", "ON RESUME: BT connection established, data transfer link open.");
@@ -311,7 +310,12 @@ public class MainActivity extends Activity {
                 e.printStackTrace();
                 try {
                     btSocket.close();
-                    enable_click = false;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            btnConnect.setEnabled(true);
+                        }
+                    });
                     return "Socket succeeded  Connect fail";
                 } catch (IOException e2) {
                     Log.e("error", "ON RESUME: Unable to close socket during connection failure", e2);
@@ -329,7 +333,15 @@ public class MainActivity extends Activity {
             }
             enable_click = true;
 //            btnOn.setBackgroundColor(Color.parseColor("#d14246"));
-            btnConnect.setBackgroundColor(Color.parseColor("#327475"));
+//            btnConnect.setBackgroundColor(Color.parseColor("#327475"));
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    btnConnect.setActivated(true);
+                    btnOn.setEnabled(true);
+                    btnOff.setEnabled(true);
+                }
+            });
             return "Connected";
         }
 
