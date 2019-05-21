@@ -462,35 +462,22 @@ public class MainActivity extends Activity {
                 String line[] = ReceiveData.split("\n");
                 ReceiveData = line[0];
                 System.out.println(ReceiveData);
-//String item[] = pureData.split(":");
+//                String item[] = pureData.split(":");
 //                Log.e("item", item[1]);
 //                Log.e("item3",item[3]);
-                times = ReceiveData.substring(1, 6);
-                String timeStr = ReceiveData.substring(0, 7);
-                String pureData = ReceiveData.replace(timeStr, "");
-                pureData = pureData.replaceAll("\\w{2}[:]", ",");
+                String pureData = ReceiveData.replaceAll("[ ]|\r", "");
+                pureData = pureData.replaceAll("[A-z]{1,2}?[:]|[T]", ",");
                 System.out.println(pureData);
                 String item[] = pureData.split(",");
                 for (int i = 0; i < item.length; i++) {
                     if (item[i].trim().isEmpty()) {
                         item[i] = "No Sensor";
                     }
-                    System.out.println(i);
                 }
-                pressure = item[1];
-                temperature = item[2];
-                flow = item[3];
-//                String p = pureData.substring(pureData.indexOf(":") + 1, pureData.indexOf("T"));
-//                System.out.println(p.replace(" ", "0"));
-//                pureData = pureData.substring(pureData.indexOf("T"));
-//                String t = pureData.substring(pureData.indexOf(":") + 1, pureData.indexOf("A"));
-//                System.out.println(t.replace(" ", "0"));
-//                pureData = pureData.substring(pureData.indexOf("A"));
-//                String f = pureData.substring(pureData.indexOf(":") + 1);
-//                System.out.println(f.replace(" ", "0"));
-//                pressure = p.replace(" ", "0");
-//                temperature = t.replace(" ", "0");
-//                flow = f.replace(" ", "0");
+                times = item[1];
+                pressure = item[2];
+                temperature = item[3];
+                flow = item[4];
                 flows = Double.parseDouble(flow);
                 LeakResults = flows * 0.05 + 0.015;
                 // 保留小数点后两位
