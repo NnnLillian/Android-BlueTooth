@@ -6,17 +6,18 @@
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:minHeight="250dp"
+
     android:background="#3276c4"
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="0dp"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints">
 
         <android.support.v7.widget.Toolbar
@@ -28,11 +29,11 @@
             app:contentInsetRight="0dp">
 
             <!--<ImageView-->
-                <!--android:layout_width="38dp"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:src="@drawable/guze"-->
-                <!--android:layout_marginRight="8dp"-->
-                <!--/>-->
+            <!--android:layout_width="38dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:src="@drawable/guze"-->
+            <!--android:layout_marginRight="8dp"-->
+            <!--/>-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,21 +44,23 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="right"
                 android:layout_gravity="right"
-                android:layout_marginRight="16dp">
+                android:layout_marginRight="16dp"
+                android:gravity="right"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Paired bluetooth devices:"
                     android:textColor="?attr/colorBackgroundFloating" />
+
                 <Spinner
+                    android:id="@+id/spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/spinner"
-                    android:theme="@style/SpinnerStyle"/>
+                    android:theme="@style/SpinnerStyle" />
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
@@ -69,41 +72,41 @@
             <TextView
                 android:id="@+id/textView1"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textColor="@android:color/white"
                 android:layout_marginLeft="8dp"
+                android:layout_weight="1"
                 android:text="No Connection"
-                />
+                android:textColor="@android:color/white" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginRight="8dp">
+                android:layout_marginRight="8dp"
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/button1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/button_connect_background"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
+                    android:background="@drawable/button_connect_background"
                     android:text="CONNECT"
                     android:textColor="@android:color/white"
                     android:textStyle="bold" />
+
                 <Button
                     android:id="@+id/button3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/button_background_warn"
+                    android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/button_background_warn"
                     android:text="DISCONNECT"
                     android:textColor="@android:color/white"
-                    android:textStyle="bold"
-                    />
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
         <!--<Button-->
@@ -124,15 +127,16 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#327475">
+                android:layout_weight="1"
+                android:background="#327475"
+                android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_gravity="center_horizontal">
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp">
 
                     <TextView
                         android:id="@+id/flowData"
@@ -145,59 +149,60 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/white"
-                        android:text="SLM" />
+                        android:text="SLM"
+                        android:textColor="@android:color/white" />
                 </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/flow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="16dp"
-                        android:layout_marginTop="16dp"
-                        android:textColor="@android:color/white"
-                        android:text="Air Flow"
-                        android:textSize="24sp" />
+                <TextView
+                    android:id="@+id/flow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="Air Flow"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="#d14246"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_gravity="center_horizontal">
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp">
+
                     <TextView
                         android:id="@+id/press"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/white"
                         android:text="00.0"
-                        android:textSize="30sp"
-                        />
+                        android:textColor="@android:color/white"
+                        android:textSize="30sp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/white"
                         android:text="KPA"
-                        />
+                        android:textColor="@android:color/white" />
                 </LinearLayout>
+
                 <TextView
                     android:id="@+id/pressure"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
                     android:text="Pressure"
-                    android:textSize="24sp"
-                    android:layout_gravity="center_horizontal"
                     android:textColor="@android:color/white"
-                    />
+                    android:textSize="24sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -209,70 +214,72 @@
 
             <LinearLayout
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#d67962"
-                android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_gravity="center_horizontal">
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp">
+
                     <TextView
                         android:id="@+id/stoppedTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/white"
                         android:text="0.00"
-                        android:textSize="30sp"
-                        />
+                        android:textColor="@android:color/white"
+                        android:textSize="30sp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/white"
-                        android:text="S"/>
+                        android:text="S"
+                        android:textColor="@android:color/white" />
                 </LinearLayout>
+
                 <TextView
                     android:id="@+id/stop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
                     android:text="Cycle Time"
                     android:textColor="@android:color/white"
                     android:textSize="24sp" />
-
 
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="#a1beb8"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_gravity="center_horizontal">
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp">
+
                     <TextView
                         android:id="@+id/degree"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="00.0"
                         android:textColor="@android:color/white"
-                        android:textSize="30sp"
-                        />
+                        android:textSize="30sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/white"
-                        android:text=" ℃" />
+                        android:text=" ℃"
+                        android:textColor="@android:color/white" />
                 </LinearLayout>
 
                 <TextView
@@ -280,8 +287,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
                     android:text="Chamber Temp"
                     android:textColor="@android:color/white"
                     android:textSize="24sp" />
@@ -293,29 +300,29 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#274a85">
+            android:background="#274a85"
+            android:orientation="vertical">
+
             <TextView
                 android:id="@+id/result"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0.00"
-                android:textSize="30sp"
-                android:textColor="@android:color/white"
-                android:layout_marginTop="16dp"
                 android:layout_gravity="center_horizontal"
-                />
+                android:layout_marginTop="16dp"
+                android:text="0.00"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+
             <TextView
                 android:id="@+id/LeakSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:text="Leak Size(INCH)"
-                android:textSize="24sp"
                 android:textColor="@android:color/white"
-                android:layout_gravity="center_horizontal"
-                />
+                android:textSize="24sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -327,9 +334,9 @@
                 android:id="@+id/on"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_background"
                 android:text="ON"
@@ -343,10 +350,10 @@
                 android:id="@+id/off"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_background_warn"
                 android:text="OFF"
@@ -383,36 +390,34 @@
     <!--app:layout_constraintStart_toEndOf="@+id/motor" />-->
 
 
-
+    <!--<EditText-->
+    <!--android:id="@+id/editText1"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="116dp"-->
+    <!--android:layout_marginLeft="16dp"-->
+    <!--android:layout_marginStart="16dp"-->
+    <!--android:ems="10"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintStart_toStartOf="parent" />-->
 
     <!--<EditText-->
-        <!--android:id="@+id/editText1"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="116dp"-->
-        <!--android:layout_marginLeft="16dp"-->
-        <!--android:layout_marginStart="16dp"-->
-        <!--android:ems="10"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintStart_toStartOf="parent" />-->
-
-    <!--<EditText-->
-        <!--android:id="@+id/editText2"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="8dp"-->
-        <!--android:layout_marginEnd="8dp"-->
-        <!--android:layout_marginLeft="16dp"-->
-        <!--android:layout_marginRight="8dp"-->
-        <!--android:layout_marginStart="16dp"-->
-        <!--android:layout_marginTop="16dp"-->
-        <!--android:ems="10"-->
-        <!--android:inputType="textMultiLine"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="0.0"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/textView1"-->
-        <!--app:layout_constraintVertical_bias="0.859" />-->
+    <!--android:id="@+id/editText2"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="8dp"-->
+    <!--android:layout_marginEnd="8dp"-->
+    <!--android:layout_marginLeft="16dp"-->
+    <!--android:layout_marginRight="8dp"-->
+    <!--android:layout_marginStart="16dp"-->
+    <!--android:layout_marginTop="16dp"-->
+    <!--android:ems="10"-->
+    <!--android:inputType="textMultiLine"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:layout_constraintHorizontal_bias="0.0"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/textView1"-->
+    <!--app:layout_constraintVertical_bias="0.859" />-->
 
 </android.support.constraint.ConstraintLayout>
