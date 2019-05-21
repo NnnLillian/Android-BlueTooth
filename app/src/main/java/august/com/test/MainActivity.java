@@ -81,7 +81,7 @@ public class MainActivity extends Activity {
     String ReceiveData = "";
     String times = "";
     String pressure = "";
-    String tempretures = "";
+    String temperature = "";
     String flow = "";
     double flows;
     String LeakResult = "";
@@ -468,18 +468,29 @@ public class MainActivity extends Activity {
                 times = ReceiveData.substring(1, 6);
                 String timeStr = ReceiveData.substring(0, 7);
                 String pureData = ReceiveData.replace(timeStr, "");
+                pureData = pureData.replaceAll("\\w{2}[:]", ",");
                 System.out.println(pureData);
-                String p = pureData.substring(pureData.indexOf(":") + 1, pureData.indexOf("T"));
-                System.out.println(p.replace(" ", "0"));
-                pureData = pureData.substring(pureData.indexOf("T"));
-                String t = pureData.substring(pureData.indexOf(":") + 1, pureData.indexOf("A"));
-                System.out.println(t.replace(" ", "0"));
-                pureData = pureData.substring(pureData.indexOf("A"));
-                String f = pureData.substring(pureData.indexOf(":") + 1);
-                System.out.println(f.replace(" ", "0"));
-                pressure = p.replace(" ", "0");
-                tempretures = t.replace(" ", "0");
-                flow = f.replace(" ", "0");
+                String item[] = pureData.split(",");
+                for (int i = 0; i < item.length; i++) {
+                    if (item[i].trim().isEmpty()) {
+                        item[i] = "No Sensor";
+                    }
+                    System.out.println(i);
+                }
+                pressure = item[1];
+                temperature = item[2];
+                flow = item[3];
+//                String p = pureData.substring(pureData.indexOf(":") + 1, pureData.indexOf("T"));
+//                System.out.println(p.replace(" ", "0"));
+//                pureData = pureData.substring(pureData.indexOf("T"));
+//                String t = pureData.substring(pureData.indexOf(":") + 1, pureData.indexOf("A"));
+//                System.out.println(t.replace(" ", "0"));
+//                pureData = pureData.substring(pureData.indexOf("A"));
+//                String f = pureData.substring(pureData.indexOf(":") + 1);
+//                System.out.println(f.replace(" ", "0"));
+//                pressure = p.replace(" ", "0");
+//                temperature = t.replace(" ", "0");
+//                flow = f.replace(" ", "0");
                 flows = Double.parseDouble(flow);
                 LeakResults = flows * 0.05 + 0.015;
                 // 保留小数点后两位
@@ -510,7 +521,7 @@ public class MainActivity extends Activity {
 //                    etReceived.setText(ReceiveData);
                     T.setText(times);
                     AP.setText(pressure);
-                    Tc.setText(tempretures);
+                    Tc.setText(temperature);
                     AF.setText(flow);
                     LS.setText(LeakResult);
                     break;
