@@ -187,6 +187,7 @@ public class MainActivity extends Activity {
                 btnOn.setActivated(false);
                 btnOn.setEnabled(false);
                 btnOff.setEnabled(false);
+                btn_click = false;
                 if (btSocket != null) {
                     try {
                         btSocket.close();
