@@ -465,7 +465,7 @@ public class MainActivity extends Activity {
 //                String item[] = pureData.split(":");
 //                Log.e("item", item[1]);
 //                Log.e("item3",item[3]);
-                String pureData = ReceiveData.replaceAll("[ ]|\r", "");
+                String pureData = ReceiveData.replaceAll("\\s", "");
                 pureData = pureData.replaceAll("[A-z]{1,2}?[:]|[T]", ",");
                 System.out.println(pureData);
                 String item[] = pureData.split(",");
@@ -481,7 +481,7 @@ public class MainActivity extends Activity {
                 flows = Double.parseDouble(flow);
                 LeakResults = flows * 0.05 + 0.015;
                 // 保留小数点后两位
-                LeakResult = String.format("%.2f", LeakResults).toString();
+                LeakResult = String.format("%.2f", LeakResults);
                 Log.e("Data", ReceiveData);
 //			System.out.println("result :"+ReceiveData);
                 Message msg = Message.obtain();
