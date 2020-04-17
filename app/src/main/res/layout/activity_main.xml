@@ -198,6 +198,7 @@
                             android:textSize="30sp" />
 
                         <TextView
+                            android:id="@+id/PRunit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="KPA"
@@ -302,6 +303,7 @@
                             android:textSize="30sp" />
 
                         <TextView
+                            android:id="@+id/TEunit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text=" ℃"
@@ -394,5 +396,26 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+        </LinearLayout>
+
     </LinearLayout>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:background="#eee"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/navigation" />
+
+
 </android.support.constraint.ConstraintLayout>

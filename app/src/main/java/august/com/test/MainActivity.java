@@ -2,12 +2,14 @@ package august.com.test;
 
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.graphics.Color;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -40,7 +42,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONObject;
 
 public class MainActivity extends Activity {
 
@@ -48,7 +49,7 @@ public class MainActivity extends Activity {
     TextView statusLabel;
     Button btnConnect, btnSend, btnQuit, btnOn, btnOff;
     EditText etReceived, etSend;
-    TextView T, AP, Tc, AF, LS;
+    TextView T, AP, Tc, AF, LS, PRunit, TEunit;
     Toolbar toolbar;
     Spinner spinner;
     List<String> data_list;
@@ -84,15 +85,55 @@ public class MainActivity extends Activity {
     String temperature = "";
     String flow = "";
     double flows;
+    //计算得出的字符串
     String LeakResult = "";
     double LeakResults;
     String ON = "ON";
     String OFF = "OFF";
-
+    String pressureUnit = "KPA";
+    String temperatureUnit = " ℃";
+    final String[] units_item = {"British", "Metric"};
+    String current_unit = "Metric";
     Boolean btn_click = false;
     Boolean connect_click = false;
     Boolean enable_click = false;
     MyHandler handler;
+
+
+    // 关于底部栏的声明
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_data:
+                    statusLabel.setText("home");
+                    return true;
+                case R.id.navigation_state:
+                    statusLabel.setText("dashboard");
+                    return true;
+                case R.id.navigation_setting:
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Which one?")
+                            .setItems(units_item, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (enable_click) {
+                                        Toast.makeText(MainActivity.this, "Choose: " + units_item[which], Toast.LENGTH_SHORT).show();
+                                        current_unit = units_item[which];
+                                    } else {
+                                        Toast tast = Toast.makeText(MainActivity.this, "CONNECT BLUETOOTH FIRST", Toast.LENGTH_LONG);
+                                        tast.setGravity(Gravity.CENTER, 0, 0);
+                                        tast.show();
+                                    }
+                                }
+                            }).create().show();
+                    return true;
+            }
+            return false;
+        }
+    };
 
 
     @Override
@@ -256,6 +297,10 @@ public class MainActivity extends Activity {
 
             }
         });
+
+        // 监听底部栏目
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
     public void Init() {
@@ -265,6 +310,8 @@ public class MainActivity extends Activity {
         Tc = (TextView) this.findViewById(R.id.degree);
         AF = (TextView) this.findViewById(R.id.flowData);
         LS = (TextView) this.findViewById(R.id.result);
+        PRunit = this.findViewById(R.id.PRunit);
+        TEunit = this.findViewById(R.id.TEunit);
         btnConnect = (Button) this.findViewById(R.id.button1);
 //        btnSend=(Button)this.findViewById(R.id.button2);
         btnOn = (Button) this.findViewById(R.id.on);
@@ -462,9 +509,6 @@ public class MainActivity extends Activity {
                 String line[] = ReceiveData.split("\n");
                 ReceiveData = line[0];
                 System.out.println(ReceiveData);
-//                String item[] = pureData.split(":");
-//                Log.e("item", item[1]);
-//                Log.e("item3",item[3]);
                 String pureData = ReceiveData.replaceAll("\\s", "");
                 pureData = pureData.replaceAll("[A-z]{1,2}?[:]|[T]", ",");
                 System.out.println(pureData);
@@ -483,7 +527,23 @@ public class MainActivity extends Activity {
                 // 保留小数点后两位
                 LeakResult = String.format("%.2f", LeakResults);
                 Log.e("Data", ReceiveData);
-//			System.out.println("result :"+ReceiveData);
+
+                // 英式与公式换算
+                switch (current_unit) {
+                    case "British":
+                        String[] result = UnitExchange.Metric2British(pressure, temperature);
+                        pressureUnit = "PSI";
+                        temperatureUnit = " °F";
+                        pressure = result[0];
+                        temperature = result[1];
+                        break;
+                    case "Metric":
+                        pressureUnit = "KPA";
+                        temperatureUnit = " ℃";
+                        break;
+                }
+
+
                 Message msg = Message.obtain();
                 msg.what = 1;
                 handler.sendMessage(msg);  //发送消息:系统会自动调用handleMessage( )方法来处理消息
@@ -511,6 +571,8 @@ public class MainActivity extends Activity {
                     Tc.setText(temperature);
                     AF.setText(flow);
                     LS.setText(LeakResult);
+                    PRunit.setText(pressureUnit);
+                    TEunit.setText(temperatureUnit);
                     break;
                 case 2:
                     break;
