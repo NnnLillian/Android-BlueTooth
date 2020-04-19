@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,7 +51,7 @@ public class MainActivity extends Activity {
     TextView statusLabel;
     Button btnConnect, btnSend, btnQuit, btnOn, btnOff;
     EditText etReceived, etSend;
-    TextView T, AP, Tc, AF, LS, PRunit, TEunit;
+    TextView T, AP, Tc, AF, LS, PRunit, TEunit, ParamAshow, ParamBshow;
     Toolbar toolbar;
     Spinner spinner;
     List<String> data_list;
@@ -88,6 +90,9 @@ public class MainActivity extends Activity {
     //计算得出的字符串
     String LeakResult = "";
     double LeakResults;
+    //计算参数
+    double paramA = 0.05;
+    double paramB = 0.015;
     String ON = "ON";
     String OFF = "OFF";
     String pressureUnit = "KPA";
@@ -108,7 +113,39 @@ public class MainActivity extends Activity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_data:
-                    statusLabel.setText("home");
+                    View dialogView = View.inflate(MainActivity.this, R.layout.dialog_change_param, null);
+                    final EditText etA = dialogView.findViewById(R.id.et_A);
+                    final EditText etB = dialogView.findViewById(R.id.et_B);
+                    etA.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                    etB.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                    ParamAshow = dialogView.findViewById(R.id.cur_paramA);
+                    ParamBshow = dialogView.findViewById(R.id.cur_paramB);
+                    ParamAshow.setText(paramA + "");
+                    ParamBshow.setText(paramB + "");
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Parameter Change\n")
+                            .setView(dialogView)
+                            .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    String strA = etA.getText().toString();
+                                    String strB = etB.getText().toString();
+                                    if (TextUtils.isEmpty(strA) || TextUtils.isEmpty(strB)) {
+                                        Toast toast = Toast.makeText(MainActivity.this, "Arguments unchanged", Toast.LENGTH_LONG);
+                                        toast.setGravity(Gravity.CENTER, 0, 0);
+                                        toast.show();
+                                    } else {
+                                        paramA = Double.parseDouble(strA);
+                                        paramB = Double.parseDouble(strB);
+                                        System.out.println(paramA + "---------" + paramB);
+                                    }
+                                }
+                            }).create().show();
                     return true;
                 case R.id.navigation_state:
                     statusLabel.setText("dashboard");
@@ -523,7 +560,7 @@ public class MainActivity extends Activity {
                 temperature = item[3];
                 flow = item[4];
                 flows = Double.parseDouble(flow);
-                LeakResults = flows * 0.05 + 0.015;
+                LeakResults = flows * paramA + paramB;
                 // 保留小数点后两位
                 LeakResult = String.format("%.2f", LeakResults);
                 Log.e("Data", ReceiveData);
