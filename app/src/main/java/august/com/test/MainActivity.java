@@ -102,6 +102,7 @@ public class MainActivity extends Activity {
     Boolean btn_click = false;
     Boolean connect_click = false;
     Boolean enable_click = false;
+    Boolean is_disconnect = false;  //代表connect按钮是否变为disconnect
     MyHandler handler;
 
 
@@ -156,7 +157,7 @@ public class MainActivity extends Activity {
                             .setItems(units_item, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    if (enable_click) {
+                                    if (is_disconnect) {
                                         Toast.makeText(MainActivity.this, "Choose: " + units_item[which], Toast.LENGTH_SHORT).show();
                                         current_unit = units_item[which];
                                     } else {
@@ -231,62 +232,114 @@ public class MainActivity extends Activity {
             }
         });
 
-        btnConnect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!btn_click) {
-                    if (address != null) {
-//                        btn_click = true;
-                        //创建连接
-                        task = new ConnectTask();
-                        task.execute(address);
-//                        btnConnect.setActivated(btn_click);
-                        statusLabel.setText("Connecting");
-                        btnConnect.setEnabled(btn_click);
-                    } else {
-                        statusLabel.setText("Nothing be selected");
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), "Don't click repeatedly", Toast.LENGTH_LONG).show();
-                }
+        /**
+         * 原始，有两个按钮时候的connect和disconnect（quit）
+         *
+         btnConnect.setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View v) {
+        if (!btn_click) {
+        if (address != null) {
+        //创建连接
+        task = new ConnectTask();
+        task.execute(address);
+        statusLabel.setText("Connecting");
+        btnConnect.setEnabled(btn_click);
+        } else {
+        statusLabel.setText("Nothing be selected");
+        }
+        } else {
+        Toast.makeText(getApplicationContext(), "Don't click repeatedly", Toast.LENGTH_LONG).show();
+        }
 
-            }
+        }
         });
 
 
-        btnQuit.setOnClickListener(new View.OnClickListener() {
+         btnQuit.setOnClickListener(new View.OnClickListener() {
 
+        @Override public void onClick(View v) {
+        // TODO Auto-generated method stub
+        task.cancel(true);
+        btnConnect.setActivated(false);
+        btnConnect.setEnabled(true);
+        btnOn.setActivated(false);
+        btnOn.setEnabled(false);
+        btnOff.setEnabled(false);
+        btn_click = false;
+        if (btSocket != null) {
+        try {
+        btSocket.close();
+        btSocket = null;
+        if (rThread != null) {
+        rThread.join();
+        }
+        statusLabel.setText("No Connection");
+
+        T.setText("0.00");
+        AP.setText("00.0");
+        Tc.setText("00.0");
+        AF.setText("0.00");
+        LS.setText("0.00");
+        //						etReceived.setText("");
+        } catch (IOException e) {
+
+        e.printStackTrace();
+        } catch (InterruptedException e) {
+
+        e.printStackTrace();
+        }
+        }
+        }
+        });
+         */
+
+        btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-                task.cancel(true);
-                btnConnect.setActivated(false);
-                btnConnect.setEnabled(true);
-                btnOn.setActivated(false);
-                btnOn.setEnabled(false);
-                btnOff.setEnabled(false);
-                btn_click = false;
-                if (btSocket != null) {
-                    try {
-                        btSocket.close();
-                        btSocket = null;
-                        if (rThread != null) {
-                            rThread.join();
+                System.out.println("~~~~~~~~~");
+                if (is_disconnect) {
+                    {
+                        is_disconnect = false;
+                        task.cancel(true);
+                        btnConnect.setActivated(false);
+                        btnConnect.setEnabled(true);
+                        btnConnect.setText("CONNECT");
+                        btnOn.setActivated(false);
+                        btnOn.setEnabled(false);
+                        btnOff.setEnabled(false);
+                        btn_click = false;
+                        if (btSocket != null) {
+                            try {
+                                btSocket.close();
+                                btSocket = null;
+                                if (rThread != null) {
+                                    rThread.join();
+                                }
+                                statusLabel.setText("No Connection");
+
+                                T.setText("0.00");
+                                AP.setText("00.0");
+                                Tc.setText("00.0");
+                                AF.setText("0.00");
+                                LS.setText("0.00");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
-                        statusLabel.setText("No Connection");
-
-                        T.setText("0.00");
-                        AP.setText("00.0");
-                        Tc.setText("00.0");
-                        AF.setText("0.00");
-                        LS.setText("0.00");
-//						etReceived.setText("");
-                    } catch (IOException e) {
-
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-
-                        e.printStackTrace();
+                    }
+                } else {
+                    if (!btn_click) {
+                        if (address != null) {
+                            //创建连接
+                            task = new ConnectTask();
+                            task.execute(address);
+                            statusLabel.setText("Connecting");
+                            btnConnect.setEnabled(btn_click);
+                        } else {
+                            statusLabel.setText("Nothing be selected");
+                        }
                     }
                 }
 
@@ -353,7 +406,7 @@ public class MainActivity extends Activity {
 //        btnSend=(Button)this.findViewById(R.id.button2);
         btnOn = (Button) this.findViewById(R.id.on);
         btnOff = (Button) this.findViewById(R.id.off);
-        btnQuit = (Button) this.findViewById(R.id.button3);
+//        btnQuit = (Button) this.findViewById(R.id.button3);
         toolbar = (Toolbar) this.findViewById(R.id.toolbar);
         spinner = (Spinner) this.findViewById(R.id.spinner);
 //        etSend=(EditText)this.findViewById(R.id.editText1);
@@ -418,8 +471,12 @@ public class MainActivity extends Activity {
                 return "Socket stream failed";
             }
             enable_click = true;
-//            btnOn.setBackgroundColor(Color.parseColor("#d14246"));
-//            btnConnect.setBackgroundColor(Color.parseColor("#327475"));
+            // 更改button样式
+            is_disconnect = true;
+            Message msg = Message.obtain();
+            msg.what = 3;
+            handler.sendMessage(msg);
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -612,6 +669,11 @@ public class MainActivity extends Activity {
                     TEunit.setText(temperatureUnit);
                     break;
                 case 2:
+                    break;
+                case 3:
+                    btnConnect.setText("DISCONNECT");
+                    btnConnect.setActivated(is_disconnect);
+                    btnConnect.setEnabled(true);
                     break;
             }
         }

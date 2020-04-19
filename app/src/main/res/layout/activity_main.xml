@@ -102,16 +102,16 @@
                     android:textColor="@android:color/white"
                     android:textStyle="bold" />
 
-                <Button
-                    android:id="@+id/button3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:textSize="16sp"
-                    android:background="@drawable/button_background_warn"
-                    android:text="DISCONNECT"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold" />
+                <!--<Button-->
+                    <!--android:id="@+id/button3"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="8dp"-->
+                    <!--android:textSize="16sp"-->
+                    <!--android:background="@drawable/button_background_warn"-->
+                    <!--android:text="DISCONNECT"-->
+                    <!--android:textColor="@android:color/white"-->
+                    <!--android:textStyle="bold" />-->
             </LinearLayout>
         </LinearLayout>
 
