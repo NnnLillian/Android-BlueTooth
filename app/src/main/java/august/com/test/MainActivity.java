@@ -3,6 +3,7 @@ package august.com.test;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -54,6 +56,7 @@ public class MainActivity extends Activity {
     TextView T, AP, Tc, AF, LS, PRunit, TEunit, ParamAshow, ParamBshow;
     Toolbar toolbar;
     Spinner spinner;
+    LinearLayout AIR, SMOKE;
     List<String> data_list;
     List<String> address_list;
     ArrayAdapter<String> arr_adapter;
@@ -365,13 +368,15 @@ public class MainActivity extends Activity {
                     if (enable_click) {
                         connect_click = true;
                         new SendInfoTask().execute(ON);
-                        btnOn.setActivated(connect_click);
+                        AIR.setBackgroundColor(Color.parseColor("#327475"));
                     } else {
                         statusLabel.setText("Illegal!\nPress Disconnect\nSelect again");
                     }
-
+                } else {
+                    new SendInfoTask().execute(ON);
+                    btnOn.setActivated(connect_click);
+                    SMOKE.setBackgroundColor(Color.parseColor("#327475"));
                 }
-
             }
         });
         btnOff.setOnClickListener(new View.OnClickListener() {
@@ -383,6 +388,8 @@ public class MainActivity extends Activity {
                     connect_click = false;
                     new SendInfoTask().execute(OFF);
                     btnOn.setActivated(connect_click);
+                    AIR.setBackgroundColor(Color.parseColor("#d14246"));
+                    SMOKE.setBackgroundColor(Color.parseColor("#d14246"));
                 }
 
             }
@@ -404,6 +411,11 @@ public class MainActivity extends Activity {
         TEunit = this.findViewById(R.id.TEunit);
         btnConnect = (Button) this.findViewById(R.id.button1);
 //        btnSend=(Button)this.findViewById(R.id.button2);
+
+        // 赋值air和smoke两个linear layout模块
+        AIR = this.findViewById(R.id.air);
+        SMOKE = this.findViewById(R.id.smoke);
+
         btnOn = (Button) this.findViewById(R.id.on);
         btnOff = (Button) this.findViewById(R.id.off);
 //        btnQuit = (Button) this.findViewById(R.id.button3);
