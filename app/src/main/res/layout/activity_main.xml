@@ -45,15 +45,12 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="right"
                 android:layout_marginRight="16dp"
-                android:gravity="right"
-                android:orientation="vertical">
-
-                <TextView
+                android:gravity="center"
+                android:orientation="horizontal">
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Paired bluetooth devices:"
-                    android:textColor="?attr/colorBackgroundFloating" />
+                    android:src="@drawable/ic_bluetooth_black_24dp" />
 
                 <Spinner
                     android:id="@+id/spinner"
@@ -201,7 +198,7 @@
                             android:id="@+id/PRunit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="KPA"
+                            android:text="PSI"
                             android:textColor="@android:color/white" />
                     </LinearLayout>
 
@@ -306,7 +303,7 @@
                             android:id="@+id/TEunit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text=" ℃"
+                            android:text="°F"
                             android:textColor="@android:color/white" />
                     </LinearLayout>
 
@@ -317,7 +314,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="16dp"
-                        android:text="Chamber Temp"
+                        android:text="Temperature"
                         android:textColor="@android:color/white"
                         android:textSize="24sp" />
                 </LinearLayout>

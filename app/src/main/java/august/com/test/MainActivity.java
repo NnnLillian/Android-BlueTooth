@@ -98,8 +98,8 @@ public class MainActivity extends Activity {
     double paramB = 0.015;
     String ON = "ON";
     String OFF = "OFF";
-    String pressureUnit = "KPA";
-    String temperatureUnit = " ℃";
+    String pressureUnit = "PSI";
+    String temperatureUnit = "°F";
     final String[] units_item = {"British", "Metric"};
     String current_unit = "Metric";
     Boolean btn_click = false;
@@ -463,7 +463,6 @@ public class MainActivity extends Activity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            btn_click = true;
                             btnConnect.setEnabled(true);
                         }
                     });
