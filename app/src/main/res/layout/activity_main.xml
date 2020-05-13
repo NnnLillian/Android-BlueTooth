@@ -1,463 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?><!--定义布局容器-->
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:background="#3276c4"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints">
+        android:layout_height="?android:actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:contentInsetLeft="0dp"
+        app:contentInsetRight="0dp">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?android:actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:contentInsetLeft="0dp"
-            app:contentInsetRight="0dp">
-
-            <!--<ImageView-->
-            <!--android:layout_width="38dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:src="@drawable/guze"-->
-            <!--android:layout_marginRight="8dp"-->
-            <!--/>-->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textColor="?attr/colorBackgroundFloating"
-                android:textSize="24sp" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:layout_marginRight="16dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_bluetooth_black_24dp" />
-
-                <Spinner
-                    android:id="@+id/spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:theme="@style/SpinnerStyle" />
-            </LinearLayout>
-        </android.support.v7.widget.Toolbar>
-
+        <!--<ImageView-->
+        <!--android:layout_width="38dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:src="@drawable/guze"-->
+        <!--android:layout_marginRight="8dp"-->
+        <!--/>-->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="8dp">
-                <TextView
-                    android:id="@+id/textView1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="No Connection"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/white" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:gravity="right"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/button_connect_background"
-                    android:text="CONNECT"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold" />
-
-                <!--<Button-->
-                    <!--android:id="@+id/button3"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginLeft="8dp"-->
-                    <!--android:textSize="16sp"-->
-                    <!--android:background="@drawable/button_background_warn"-->
-                    <!--android:text="DISCONNECT"-->
-                    <!--android:textColor="@android:color/white"-->
-                    <!--android:textStyle="bold" />-->
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#4B8479"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="16dp">
-
-                        <TextView
-                            android:id="@+id/flowData"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0.00"
-                            android:textColor="@android:color/white"
-                            android:textSize="30sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="SLM"
-                            android:textColor="@android:color/white" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/flow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:text="Air Flow"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp" />
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/colorWarm"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="16dp">
-
-                        <TextView
-                            android:id="@+id/press"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="00.0"
-                            android:textColor="@android:color/white"
-                            android:textSize="30sp" />
-
-                        <TextView
-                            android:id="@+id/PRunit"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="PSI"
-                            android:textColor="@android:color/white" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/pressure"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:text="Pressure"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp" />
-                </LinearLayout>
-
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#d67962"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="16dp">
-
-                        <TextView
-                            android:id="@+id/stoppedTime"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0.00"
-                            android:textColor="@android:color/white"
-                            android:textSize="30sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="S"
-                            android:textColor="@android:color/white" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/stop"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:text="Cycle Time"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#a1beb8"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="16dp">
-
-                        <TextView
-                            android:id="@+id/degree"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="00.0"
-                            android:textColor="@android:color/white"
-                            android:textSize="30sp" />
-
-                        <TextView
-                            android:id="@+id/TEunit"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="°F"
-                            android:textColor="@android:color/white" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/temperature"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:text="Temperature"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:background="#274a85"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:layout_marginRight="16dp"
             android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/result"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:text="0.00"
-                android:textColor="@android:color/white"
-                android:textSize="30sp" />
-
-            <TextView
-                android:id="@+id/LeakSize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="Leak Size(INCH)"
-                android:textColor="@android:color/white"
-                android:textSize="24sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.8"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/air"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/colorRed"
-                android:orientation="vertical"
-                android:gravity="center">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Air"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_bluetooth_black_24dp" />
 
-            </LinearLayout>
-
-            <View
-                android:layout_width="1dip"
-                android:layout_height="match_parent"
-                android:background="#ddd"
-                />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/colorRed"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/smoke"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Smoke"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp" />
-
-                </LinearLayout>
-            </LinearLayout>
-
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/SpinnerStyle" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/on"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:layout_weight="1"
-                android:background="@drawable/button_background"
-                android:text="ON"
-                android:textColor="@android:color/white"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/off" />
-
-            <Button
-                android:id="@+id/off"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
-                android:layout_weight="1"
-                android:background="@drawable/button_background_warn"
-                android:text="OFF"
-                android:textColor="@android:color/white"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-        <android.support.design.widget.BottomNavigationView
-            android:id="@+id/navigation"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="0dp"
-            android:layout_marginStart="0dp"
-            android:background="#eee"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:menu="@menu/navigation" />
+            android:text="@string/app_name"
+            android:textColor="?attr/colorBackgroundFloating"
+            android:textSize="24sp" />
+    </android.support.v7.widget.Toolbar>
 
+    <LinearLayout
+        android:id="@+id/viewpager_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:layout_above="@id/navigation_launch">
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager_launch"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation_launch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:background="#eee"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/navigation"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

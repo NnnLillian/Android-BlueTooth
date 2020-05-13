@@ -2,19 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_data"
-        android:icon="@drawable/ic_folder_black_24dp"
-        android:title="Data" />
-
-    <item
         android:id="@+id/navigation_state"
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="State" />
 
     <item
+        android:id="@+id/navigation_history"
+        android:icon="@drawable/ic_folder_black_24dp"
+        android:title="History" />
+
+    <item
         android:id="@+id/navigation_setting"
         android:icon="@drawable/ic_settings_black_24dp"
         android:title="Setting" />
+
 
 
 </menu>
