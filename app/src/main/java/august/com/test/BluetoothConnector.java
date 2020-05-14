@@ -126,7 +126,7 @@ public class BluetoothConnector {
         new BluetoothNotifyTask().execute(data);
     }
 
-    ArrayList<BluetoothDataListener> listeners;
+    ArrayList<BluetoothDataListener> listeners = new ArrayList<BluetoothDataListener>();
 
     void registerListener(BluetoothDataListener listener) {
         if (listeners.indexOf(listener) < 0) {
