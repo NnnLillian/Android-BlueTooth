@@ -1,8 +1,7 @@
 package august.com.test;
 
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
+import java.util.ArrayList;
 
 public class ActivityController {
     static ActivityController controller;
@@ -28,10 +27,9 @@ public class ActivityController {
     }
 
     void onFragmentChange(int i) {
-        BottomNavigationView navigation = activity.findViewById(R.id.navigation_launch);
-        navigation.getMenu().getItem(i).setChecked(true);
-        ViewPager viewPager = activity.findViewById(R.id.viewpager_launch);
-        viewPager.setCurrentItem(i);
+        for (FragmentChangeListener fl : fragmentChangeListeners) {
+            fl.updateFragment(i);
+        }
     }
 
     public String getAddress() {
@@ -41,5 +39,17 @@ public class ActivityController {
     public void setAddress(String address) {
         this.address = address;
         Log.i("address: ", address);
+    }
+
+    interface FragmentChangeListener {
+        void updateFragment(int i);
+    }
+
+    ArrayList<FragmentChangeListener> fragmentChangeListeners = new ArrayList<FragmentChangeListener>();
+
+    void registerFragmentChangeListener(FragmentChangeListener listener) {
+        if (fragmentChangeListeners.indexOf(listener) < 0) {
+            fragmentChangeListeners.add(listener);
+        }
     }
 }

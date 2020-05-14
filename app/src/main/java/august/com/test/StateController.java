@@ -1,5 +1,7 @@
 package august.com.test;
 
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
@@ -7,8 +9,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 enum State {
     DISCONNECT,
+    CONNECTING,
     CONNECTED,
     AIR,
     SMOKE
@@ -36,24 +43,53 @@ public class StateController {
     final String[] units_item = {"British", "Metric"};
     String current_unit = "Metric";
     State state = State.DISCONNECT;
+    final Integer maxHistorySize = 10;
+
+    DBHelper helper;
+
+    void insertHistory(String receiveData) {
+
+        // 测试数据，后期删除
+        receiveData = "12.23";
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String time = dateFormat.format(timestamp);
+
+        SQLiteDatabase db = helper.getReadableDatabase();
+        SQLiteStatement statement = db.compileStatement("INSERT INTO history(time, LeakSize) VALUES(?, ?)");
+        statement.bindString(1, time);
+        statement.bindString(2, receiveData);
+        statement.execute();
+        statement.close();
+    }
+
     BluetoothConnector.BluetoothDataListener listener = new BluetoothConnector.BluetoothDataListener() {
         @Override
         public void onReceived(String data) {
             updateStatus(data);
         }
     };
+
     private StateController() {
         BluetoothConnector connector = BluetoothConnector.get();
         connector.registerListener(listener);
     }
+
     static StateController get() {
         if (controller == null) {
             controller = new StateController();
         }
         return controller;
     }
+
     void bind(View view) {
         this.view = view;
+        ActivityController activityController = ActivityController.get();
+        assert activityController.activity != null : "bad activity";
+        if (helper == null) {
+            helper = new DBHelper(activityController.activity);
+        }
     }
 
     void onConnectClicked() {
@@ -72,7 +108,7 @@ public class StateController {
             Log.e("error", "failed to find button");
             return;
         }
-        // 连接过程中的connect button
+        state = State.CONNECTING;
         tStatus.setText("Connecting");
         tConnect.setEnabled(false);
     }
@@ -115,7 +151,7 @@ public class StateController {
     }
 
     void setTextViewHelper(int id, String val, String def) {
-        if(view == null)
+        if (view == null)
             return;
         final TextView textView = view.findViewById(id);
         if (textView != null) {
@@ -142,8 +178,6 @@ public class StateController {
     }
 
     void updateStatus(String ReceiveData) {
-        BluetoothConnector connector = BluetoothConnector.get();
-
         String line[] = ReceiveData.split("\n");
         ReceiveData = line[0];
         System.out.println(ReceiveData);
@@ -181,12 +215,15 @@ public class StateController {
     void resetBluetooth() {
         assert view != null : "view not bind";
         BluetoothConnector connector = BluetoothConnector.get();
-        if (state == State.CONNECTED) {
+        if (state == State.CONNECTED || state == State.CONNECTING) {
+            Log.i("msg", "disconnect bluetooth");
             state = State.DISCONNECT;
             setConnectButton("");
             connector.reset();
         }
         setPanelData();
+        setConnectButton("No Connection");
+        setAir8SmokeLayout(state);
     }
 
     // 设置发送ON和OFF
@@ -207,7 +244,15 @@ public class StateController {
                 }
                 break;
             case "OFF":
-                state = connector.isConnected() ? State.CONNECTED : State.DISCONNECT;
+                switch (state) {
+                    case SMOKE:
+                        insertHistory(connector.getReceiveData());
+                        state = State.CONNECTED;
+                        break;
+                    default:
+                        state = connector.isConnected() ? State.CONNECTED : State.DISCONNECT;
+                        break;
+                }
                 break;
         }
         setAir8SmokeLayout(state);

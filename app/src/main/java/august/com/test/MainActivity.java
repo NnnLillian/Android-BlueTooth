@@ -28,6 +28,11 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> arr_adapter;
     AlertDialog.Builder builder;
 
+    private ViewPager tViewPager;
+    private MenuItem menuItem;
+    private BottomNavigationView tNavigator;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,8 +50,11 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        BottomNavigationView tNavigator = findViewById(R.id.navigation_launch);
-        ViewPager tViewPager = findViewById(R.id.viewpager_launch);
+        tNavigator = findViewById(R.id.navigation_launch);
+        tViewPager = findViewById(R.id.viewpager_launch);
+
+        // 设置缓存页面
+        tViewPager.setOffscreenPageLimit(3);
 
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new stateFragment());
@@ -55,8 +63,25 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), fragments);
         tViewPager.setAdapter(adapter);
+        tNavigator.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.navigation_state:
+                                tViewPager.setCurrentItem(0);
+                                break;
+                            case R.id.navigation_history:
+                                tViewPager.setCurrentItem(1);
+                                break;
+                            case R.id.navigation_setting:
+                                tViewPager.setCurrentItem(2);
+                                break;
+                        }
 
-        tNavigator.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+                        return false;
+                    }
+                });
 
         // ViewPager 滑动事件监听
         tViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -66,8 +91,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int i) {
-                ActivityController controller = ActivityController.get();
+                if (menuItem != null) {
+                    menuItem.setChecked(false);
+                } else {
+                    tNavigator.getMenu().getItem(0).setChecked(false);
+                }
                 controller.onFragmentChange(i);
+                menuItem = tNavigator.getMenu().getItem(i);
+                menuItem.setChecked(true);
             }
 
             @Override
@@ -115,32 +146,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
-    // 关于底部栏的声明
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            int target = 0;
-            ActivityController controller = ActivityController.get();
-            switch (item.getItemId()) {
-                case R.id.navigation_state:
-                    target = 0;
-                    break;
-                case R.id.navigation_history:
-                    target = 1;
-                    break;
-                case R.id.navigation_setting:
-                    target = 2;
-                    break;
-                default:
-                    return false;
-            }
-            controller.onFragmentChange(target);
-            return true;
-        }
-    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

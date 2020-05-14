@@ -41,6 +41,7 @@ public class stateFragment extends Fragment {
                 controller.setAir8SmokeLayout(controller.state);
                 break;
             default:
+                controller.resetBluetooth();
                 break;
         }
         btnConnect.setOnClickListener(new View.OnClickListener() {
