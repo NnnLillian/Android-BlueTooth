@@ -175,8 +175,6 @@ public class BluetoothConnector {
             rThread.start();
             StateController controller = StateController.get();
             // 更改button样式
-            // is_disconnect = true;
-            boolean on = !(result.compareTo("Connected") == 0);
             controller.setConnectButton(result);
         }
     }

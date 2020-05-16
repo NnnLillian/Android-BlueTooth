@@ -37,8 +37,8 @@ public class historyFragment extends Fragment {
     }
 
     void updateTable() {
-        DBHelper helper = new DBHelper(getActivity());
-        SQLiteDatabase db = helper.getReadableDatabase();
+        StateController stateController = StateController.get();
+        SQLiteDatabase db = stateController.helper.getReadableDatabase();
 
         Cursor cursor = db.rawQuery("select * from history order by time DESC limit 10;", null);
         if (cursor.getCount() <= 0) {
