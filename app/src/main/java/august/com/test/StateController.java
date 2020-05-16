@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 enum State {
     DISCONNECT,
@@ -40,10 +41,8 @@ public class StateController {
     double paramB = 0.015;
     String pressureUnit = "PSI";
     String temperatureUnit = "°F";
-    final String[] units_item = {"British", "Metric"};
-    String current_unit = "Metric";
+    String currentUnit = "British";
     State state = State.DISCONNECT;
-    final Integer maxHistorySize = 10;
 
     DBHelper helper;
 
@@ -196,7 +195,7 @@ public class StateController {
         Log.e("Data", ReceiveData);
 
         // 英式与公式换算
-        switch (current_unit) {
+        switch (currentUnit) {
             case "British":
                 pressureUnit = "PSI";
                 temperatureUnit = " °F";
@@ -279,6 +278,26 @@ public class StateController {
                 tAIR.setBackgroundColor(Color.parseColor("#d14246"));
                 tSMOKE.setBackgroundColor(Color.parseColor("#d14246"));
                 break;
+        }
+    }
+
+    public void setUnit(String unit) {
+        currentUnit = unit;
+        for (SettingFragmentChangeListener sfl : settingFragmentChangeListenerArrayList) {
+            sfl.update();
+        }
+    }
+
+
+    interface SettingFragmentChangeListener {
+        void update();
+    }
+
+    ArrayList<SettingFragmentChangeListener> settingFragmentChangeListenerArrayList = new ArrayList<SettingFragmentChangeListener>();
+
+    void registerSettingFragmentChangeListener(SettingFragmentChangeListener listener) {
+        if (settingFragmentChangeListenerArrayList.indexOf(listener) < 0) {
+            settingFragmentChangeListenerArrayList.add(listener);
         }
     }
 }

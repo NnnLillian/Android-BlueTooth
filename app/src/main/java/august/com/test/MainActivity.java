@@ -1,6 +1,7 @@
 package august.com.test;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -152,6 +154,26 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    public void onAlertExchangeDialog() {
+        final String[] units_item = {"British", "Metric"};
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Which one?")
+                .setItems(units_item, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        StateController controller = StateController.get();
+                        if (controller.state == State.CONNECTED) {
+                            Toast.makeText(MainActivity.this, "Choose: " + units_item[which], Toast.LENGTH_SHORT).show();
+                            controller.setUnit(units_item[which]);
+                        } else {
+                            Toast tast = Toast.makeText(MainActivity.this, "CONNECT BLUETOOTH FIRST", Toast.LENGTH_LONG);
+                            tast.setGravity(Gravity.CENTER, 0, 0);
+                            tast.show();
+                        }
+                    }
+                }).create().show();
     }
 
     @Override
