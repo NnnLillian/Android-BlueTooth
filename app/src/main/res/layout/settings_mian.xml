@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#3276c4"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
@@ -17,6 +18,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -43,7 +46,6 @@
                     android:textStyle="bold"/>
             </LinearLayout>
 
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -54,11 +56,93 @@
                     android:id="@+id/exchangeUnit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="EXCHANGE"/>
+                    android:background="@drawable/button_background"
+                    android:text="EXCHANGE"
+                    android:textColor="@android:color/white"/>
             </LinearLayout>
 
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:background="#274a85"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Leak Size Calibration"
+                        android:textColor="@android:color/white"
+                        android:textSize="28sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right">
+
+                    <ImageButton
+                        android:id="@+id/add_calibration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_background_success"
+                        android:src="@drawable/ic_add_black_24dp"/>
+
+                    <ImageButton
+                        android:id="@+id/delete_calibration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_delete_black_24dp"
+                        android:background="@drawable/button_background_warn"
+                        android:layout_marginLeft="4dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <include
+                layout="@layout/calibration_item"
+                android:id="@+id/calibration_table_title"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#fff"/>
+
+            <ListView
+                android:id="@+id/calibration_list"
+                android:divider="#fff"
+                android:dividerHeight="1dip"
+                android:scrollbars="none"
+                android:fadingEdge="none"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="test"/>
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

@@ -110,12 +110,13 @@ public class BluetoothConnector {
         }
     }
 
-    public String getReceiveData() {
+    public synchronized String getReceiveData() {
         return ReceiveData;
     }
 
     public synchronized void setReceiveData(String ReceiveData) {
         Log.i("ReceiveData: ", ReceiveData);
+        this.ReceiveData = ReceiveData;
     }
 
     interface BluetoothDataListener {

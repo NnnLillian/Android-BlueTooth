@@ -1,5 +1,7 @@
 package august.com.test;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.Color;
@@ -13,6 +15,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 enum State {
     DISCONNECT,
@@ -48,9 +51,6 @@ public class StateController {
 
     void insertHistory(String receiveData) {
 
-        // 测试数据，后期删除
-        receiveData = "12.23";
-
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         String time = dateFormat.format(timestamp);
@@ -62,6 +62,38 @@ public class StateController {
         statement.execute();
         statement.close();
     }
+
+    void insertCalibration(String pressureValue, String leakSizeValue) {
+        ContentValues values = new ContentValues();
+        values.put("pressure", pressureValue);
+        values.put("LeakSize", leakSizeValue);
+        helper.getWritableDatabase().insert("calibration", null, values);
+        updateTable();
+    }
+
+    void deleteCalibration(String pressureValue, String leakSizeValue) {
+        helper.getWritableDatabase().delete("calibration", "pressure = ? and LeakSize = ?", new String[]{pressureValue, leakSizeValue});
+        updateTable();
+    }
+
+    float[] selectCalibrationByColumn(String column) {
+        Cursor cursor = helper.getWritableDatabase().query("calibration", new String[]{column}, null, null, null, null, null);
+        int n = cursor.getCount();
+        float[] list = new float[n];
+        //移动到首位
+        cursor.moveToFirst();
+        for (int i = 0; i < n; i++) {
+            String p = cursor.getString(cursor.getColumnIndex(column));
+            list[i] = Float.parseFloat(p);
+            //移动到下一位
+            cursor.moveToNext();
+        }
+        return list;
+    }
+
+//    String[] selectCalibrationLeakSize() {
+//        return helper.getWritableDatabase().query("calibration", new String[]{"LeakSize"}, null, null, null, null, null)
+//    }
 
     BluetoothConnector.BluetoothDataListener listener = new BluetoothConnector.BluetoothDataListener() {
         @Override
@@ -91,6 +123,17 @@ public class StateController {
         }
     }
 
+    boolean isWorking() {
+        switch (state) {
+            case CONNECTED:
+            case AIR:
+            case SMOKE:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     void onConnectClicked() {
         assert view != null : "view not bind";
         ActivityController activityController = ActivityController.get();
@@ -107,8 +150,11 @@ public class StateController {
             Log.e("error", "failed to find button");
             return;
         }
-        state = State.CONNECTING;
-        tStatus.setText("Connecting");
+
+        if (state == State.DISCONNECT) {
+            state = State.CONNECTING;
+            tStatus.setText("Connecting");
+        }
         tConnect.setEnabled(false);
     }
 
@@ -189,7 +235,11 @@ public class StateController {
         temperature = item[3];
         flow = item[4];
         flows = Double.parseDouble(flow);
-        LeakResults = flows * paramA + paramB;
+
+        // 指数函数拟合
+        float[] x = selectCalibrationByColumn("pressure");
+        float[] y = selectCalibrationByColumn("LeakSize");
+        LeakResults = LeastSquares.estimate(x, y, Float.parseFloat(pressure));
         // 保留小数点后两位
         LeakResult = String.format("%.2f", LeakResults);
         Log.e("Data", ReceiveData);
@@ -197,15 +247,18 @@ public class StateController {
         // 英式与公式换算
         switch (currentUnit) {
             case "British":
+                String[] resultB = UnitExchange.Metric2British(pressure, temperature);
                 pressureUnit = "PSI";
                 temperatureUnit = " °F";
+                pressure = resultB[0];
+                temperature = resultB[1];
                 break;
             case "Metric":
-                String[] result = UnitExchange.British2Metric(pressure, temperature);
+//                String[] result = UnitExchange.British2Metric(pressure, temperature);
                 pressureUnit = "KPA";
                 temperatureUnit = " ℃";
-                pressure = result[0];
-                temperature = result[1];
+//                pressure = result[0];
+//                temperature = result[1];
                 break;
         }
         setPanelData(times, pressure, temperature, flow, LeakResult, pressureUnit, temperatureUnit, "Connected");
@@ -228,6 +281,7 @@ public class StateController {
     // 设置发送ON和OFF
     public void sendMsg(String Msg) {
         BluetoothConnector connector = BluetoothConnector.get();
+        connector.postMessageTask(Msg);
         switch (Msg) {
             case "ON":
                 switch (state) {
@@ -245,8 +299,9 @@ public class StateController {
             case "OFF":
                 switch (state) {
                     case SMOKE:
-                        insertHistory(connector.getReceiveData());
+                        insertHistory(LeakResult);
                         state = State.CONNECTED;
+                        setPanelData();
                         break;
                     default:
                         state = connector.isConnected() ? State.CONNECTED : State.DISCONNECT;
@@ -255,7 +310,6 @@ public class StateController {
                 break;
         }
         setAir8SmokeLayout(state);
-        connector.postMessageTask(Msg);
     }
 
     public void setAir8SmokeLayout(State state) {
@@ -288,6 +342,11 @@ public class StateController {
         }
     }
 
+    public void updateTable() {
+        for (SettingFragmentChangeListener sfl : settingFragmentChangeListenerArrayList) {
+            sfl.update();
+        }
+    }
 
     interface SettingFragmentChangeListener {
         void update();

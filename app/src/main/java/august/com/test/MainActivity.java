@@ -2,18 +2,22 @@ package august.com.test;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 
@@ -152,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+//        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -164,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         StateController controller = StateController.get();
-                        if (controller.state == State.CONNECTED) {
+                        if (controller.isWorking()) {
                             Toast.makeText(MainActivity.this, "Choose: " + units_item[which], Toast.LENGTH_SHORT).show();
                             controller.setUnit(units_item[which]);
                         } else {
@@ -174,6 +178,78 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }).create().show();
+    }
+
+    public void onAlertAddDialog() {
+        View dialogView = View.inflate(MainActivity.this, R.layout.dialog_add_param, null);
+        final EditText etA = dialogView.findViewById(R.id.et_A);
+        final EditText etB = dialogView.findViewById(R.id.et_B);
+        etA.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        etB.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        final StateController controller = StateController.get();
+        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                .setView(dialogView)
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String strA = etA.getText().toString();
+                        String strB = etB.getText().toString();
+                        if (TextUtils.isEmpty(strA) || TextUtils.isEmpty(strB)) {
+                            Toast toast = Toast.makeText(MainActivity.this, "ADD FAIL", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                        } else {
+                            controller.insertCalibration(strA, strB);
+                            Toast toast = Toast.makeText(MainActivity.this, "SUCCESS", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                        }
+                    }
+                }).create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#327475"));
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#303f9f"));
+    }
+
+    public void onAlertDeleteDialog() {
+        View dialogView = View.inflate(MainActivity.this, R.layout.dialog_delete_param, null);
+        final EditText etdA = dialogView.findViewById(R.id.etd_A);
+        final EditText etdB = dialogView.findViewById(R.id.etd_B);
+        etdA.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        etdB.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        final StateController controller = StateController.get();
+        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                .setView(dialogView)
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String strA = etdA.getText().toString();
+                        String strB = etdB.getText().toString();
+                        if (TextUtils.isEmpty(strA) || TextUtils.isEmpty(strB)) {
+                            Toast toast = Toast.makeText(MainActivity.this, "DELETE FAIL", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                        } else {
+                            controller.deleteCalibration(strA, strB);
+                            Toast toast = Toast.makeText(MainActivity.this, "SUCCESS", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                        }
+                    }
+                }).create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#d14246"));
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#303f9f"));
     }
 
     @Override
