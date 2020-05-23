@@ -15,7 +15,8 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 enum State {
     DISCONNECT,
@@ -49,6 +50,8 @@ public class StateController {
 
     DBHelper helper;
 
+    Timer watchDogTimer;
+    long watchdogTimestamp = -1l;
     void insertHistory(String receiveData) {
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -223,6 +226,7 @@ public class StateController {
     }
 
     void updateStatus(String ReceiveData) {
+        feedWatchdog();
         String line[] = ReceiveData.split("\n");
         ReceiveData = line[0];
         System.out.println(ReceiveData);
@@ -295,22 +299,55 @@ public class StateController {
                         // alert
                         break;
                 }
+                tryStartWatchdog();
                 break;
             case "OFF":
                 switch (state) {
                     case SMOKE:
                         insertHistory(LeakResult);
                         state = State.CONNECTED;
-                        setPanelData();
                         break;
                     default:
                         state = connector.isConnected() ? State.CONNECTED : State.DISCONNECT;
                         break;
                 }
+                setPanelData();
                 break;
         }
         setAir8SmokeLayout(state);
     }
+
+    public void tryStartWatchdog() {
+        if(isWorking() && watchDogTimer == null){
+            watchdogTimestamp = System.currentTimeMillis();
+            watchDogTimer = new Timer();
+            watchDogTimer.schedule(new WatchDogTask(), 0,2000);
+        } else {
+            // already running
+        }
+    }
+
+    public synchronized void feedWatchdog() {
+        watchdogTimestamp = System.currentTimeMillis();
+    }
+
+    public class  WatchDogTask extends TimerTask {
+        @Override
+        public void run() {
+            long current = System.currentTimeMillis();
+            if ((current - watchdogTimestamp)  >= 2000) {
+                for(WatchdogListener l : watchdogListeners) {
+                    l.onFailure();
+                }
+                cancel();
+                if (watchDogTimer != null) {
+                    watchDogTimer.cancel();
+                    watchDogTimer = null;
+                }
+            }
+            watchdogTimestamp = current;
+        }
+    };
 
     public void setAir8SmokeLayout(State state) {
         LinearLayout tAIR, tSMOKE;
@@ -351,12 +388,20 @@ public class StateController {
     interface SettingFragmentChangeListener {
         void update();
     }
-
+    interface WatchdogListener {
+        void onFailure();
+    }
     ArrayList<SettingFragmentChangeListener> settingFragmentChangeListenerArrayList = new ArrayList<SettingFragmentChangeListener>();
+    ArrayList<WatchdogListener> watchdogListeners = new ArrayList<WatchdogListener>();
 
     void registerSettingFragmentChangeListener(SettingFragmentChangeListener listener) {
         if (settingFragmentChangeListenerArrayList.indexOf(listener) < 0) {
             settingFragmentChangeListenerArrayList.add(listener);
+        }
+    }
+    void registerWatchdogListener(WatchdogListener listener) {
+        if (watchdogListeners.indexOf(listener) < 0) {
+            watchdogListeners.add(listener);
         }
     }
 }

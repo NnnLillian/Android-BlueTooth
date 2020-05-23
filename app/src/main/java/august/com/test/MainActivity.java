@@ -252,6 +252,25 @@ public class MainActivity extends AppCompatActivity {
         dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#303f9f"));
     }
 
+    /**
+     * 机器停止运行时的弹窗
+     * 并发送off指令
+     */
+    public void onAlertStopMsg() {
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("MACHINE STOPPED")
+//                .setMessage("hi").create().show();
+                .setIcon(R.drawable.ic_error_red_24dp)
+                .setCancelable(true)
+                .setPositiveButton("OFF", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        StateController controller = StateController.get();
+                        controller.sendMsg("OFF");
+                    }
+                }).create().show();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
