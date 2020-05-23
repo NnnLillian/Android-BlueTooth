@@ -75,7 +75,7 @@ public class stateFragment extends Fragment {
         });
 
         // 页面加载时候，注册一个看门狗，负责监听机器是否停止运行
-        StateController.WatchdogListener listener = new StateController.WatchdogListener() {
+        StateEventListener listener = new StateEventListener() {
             @Override
             public void onFailure() {
                 Log.e("Dog:", "WANG WANG");
@@ -83,7 +83,7 @@ public class stateFragment extends Fragment {
                 postWatchDogWarning();
             }
         };
-        controller.registerWatchdogListener(listener);
+        controller.registerStateEventListener(listener);
     }
 
     void postWatchDogWarning() {

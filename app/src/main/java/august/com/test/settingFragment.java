@@ -29,6 +29,8 @@ public class settingFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        StateController stateController = StateController.get();
+
         // 页面切换监听器
         ActivityController.FragmentChangeListener listener = new ActivityController.FragmentChangeListener() {
             @Override
@@ -65,15 +67,14 @@ public class settingFragment extends Fragment {
         });
 
         // 数据变化监听器
-        final StateController stateController = StateController.get();
-        StateController.SettingFragmentChangeListener settingFragmentChangeListener = new StateController.SettingFragmentChangeListener() {
+        StateEventListener stateEventListener = new StateEventListener() {
             @Override
-            public void update() {
+            void onUpdate() {
                 updateUnit();
                 getTable();
             }
         };
-        stateController.registerSettingFragmentChangeListener(settingFragmentChangeListener);
+        stateController.registerStateEventListener(stateEventListener);
 
 
         final Button test = getView().findViewById(R.id.test);

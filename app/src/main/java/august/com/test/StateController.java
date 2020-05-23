@@ -26,6 +26,15 @@ enum State {
     SMOKE
 };
 
+abstract class StateEventListener {
+    /* this function is triggered when data changed */
+    void onUpdate() { /* empty code block*/ }
+    /* this function is triggered when watch dog check failed */
+    void onFailure() { /* empty code block*/ }
+    /* this function is triggered when pressure exceeded the limit */
+    void onCheck() { /* empty code block*/ }
+}
+
 public class StateController {
     private static StateController controller;
 
@@ -48,10 +57,14 @@ public class StateController {
     String currentUnit = "British";
     State state = State.DISCONNECT;
 
+    boolean leakCheck = false;
+    float pressureUpperBound = 15.0f;
+
     DBHelper helper;
 
     Timer watchDogTimer;
     long watchdogTimestamp = -1l;
+
     void insertHistory(String receiveData) {
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -240,6 +253,8 @@ public class StateController {
         flow = item[4];
         flows = Double.parseDouble(flow);
 
+//        pressureCheck();
+
         // 指数函数拟合
         float[] x = selectCalibrationByColumn("pressure");
         float[] y = selectCalibrationByColumn("LeakSize");
@@ -299,6 +314,7 @@ public class StateController {
                         // alert
                         break;
                 }
+                leakCheck = false;
                 tryStartWatchdog();
                 break;
             case "OFF":
@@ -316,12 +332,20 @@ public class StateController {
         }
         setAir8SmokeLayout(state);
     }
+//
+//    public void pressureCheck() {
+//        float p = Float.parseFloat(pressure);
+//        if (p > pressureUpperBound && leakCheck == false) {
+//
+//            leakCheck = true;
+//        }
+//    }
 
     public void tryStartWatchdog() {
-        if(isWorking() && watchDogTimer == null){
+        if (isWorking() && watchDogTimer == null) {
             watchdogTimestamp = System.currentTimeMillis();
             watchDogTimer = new Timer();
-            watchDogTimer.schedule(new WatchDogTask(), 0,2000);
+            watchDogTimer.schedule(new WatchDogTask(), 0, 2000);
         } else {
             // already running
         }
@@ -331,14 +355,13 @@ public class StateController {
         watchdogTimestamp = System.currentTimeMillis();
     }
 
-    public class  WatchDogTask extends TimerTask {
+    public class WatchDogTask extends TimerTask {
         @Override
         public void run() {
             long current = System.currentTimeMillis();
-            if ((current - watchdogTimestamp)  >= 2000) {
-                for(WatchdogListener l : watchdogListeners) {
+            if ((current - watchdogTimestamp) >= 2000) {
+                for(StateEventListener l : stateEventListeners)
                     l.onFailure();
-                }
                 cancel();
                 if (watchDogTimer != null) {
                     watchDogTimer.cancel();
@@ -347,8 +370,7 @@ public class StateController {
             }
             watchdogTimestamp = current;
         }
-    };
-
+    }
     public void setAir8SmokeLayout(State state) {
         LinearLayout tAIR, tSMOKE;
         // 赋值air和smoke两个linear layout模块
@@ -374,34 +396,17 @@ public class StateController {
 
     public void setUnit(String unit) {
         currentUnit = unit;
-        for (SettingFragmentChangeListener sfl : settingFragmentChangeListenerArrayList) {
-            sfl.update();
-        }
+        updateTable();
     }
 
     public void updateTable() {
-        for (SettingFragmentChangeListener sfl : settingFragmentChangeListenerArrayList) {
-            sfl.update();
-        }
+        for (StateEventListener l : stateEventListeners)
+            l.onUpdate();
     }
-
-    interface SettingFragmentChangeListener {
-        void update();
-    }
-    interface WatchdogListener {
-        void onFailure();
-    }
-    ArrayList<SettingFragmentChangeListener> settingFragmentChangeListenerArrayList = new ArrayList<SettingFragmentChangeListener>();
-    ArrayList<WatchdogListener> watchdogListeners = new ArrayList<WatchdogListener>();
-
-    void registerSettingFragmentChangeListener(SettingFragmentChangeListener listener) {
-        if (settingFragmentChangeListenerArrayList.indexOf(listener) < 0) {
-            settingFragmentChangeListenerArrayList.add(listener);
-        }
-    }
-    void registerWatchdogListener(WatchdogListener listener) {
-        if (watchdogListeners.indexOf(listener) < 0) {
-            watchdogListeners.add(listener);
+    ArrayList<StateEventListener> stateEventListeners = new ArrayList<StateEventListener>();
+    void registerStateEventListener(StateEventListener listener) {
+        if (stateEventListeners.indexOf(listener) < 0) {
+            stateEventListeners.add(listener);
         }
     }
 }
