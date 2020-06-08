@@ -346,6 +346,7 @@ public class StateController {
                         break;
                 }
                 setPanelData();
+                resetWatchdog();
                 break;
         }
         setAir8SmokeLayout(state);
@@ -366,7 +367,7 @@ public class StateController {
         if (isWorking() && watchDogTimer == null) {
             watchdogTimestamp = System.currentTimeMillis();
             watchDogTimer = new Timer();
-            watchDogTimer.schedule(new WatchDogTask(), 0, 2000);
+            watchDogTimer.schedule(new WatchDogTask(), 0, 1200);
         } else {
             // already running
         }
@@ -376,18 +377,23 @@ public class StateController {
         watchdogTimestamp = System.currentTimeMillis();
     }
 
+    public void resetWatchdog() {
+        if (watchDogTimer != null) {
+            watchDogTimer.cancel();
+            watchDogTimer = null;
+        }
+    }
+
     public class WatchDogTask extends TimerTask {
         @Override
         public void run() {
             long current = System.currentTimeMillis();
-            if ((current - watchdogTimestamp) >= 2000) {
-                for(StateEventListener l : stateEventListeners)
+            if ((current - watchdogTimestamp) >= 1200) {
+                for (StateEventListener l : stateEventListeners)
                     l.onFailure();
                 cancel();
-                if (watchDogTimer != null) {
-                    watchDogTimer.cancel();
-                    watchDogTimer = null;
-                }
+                forceStopped = true;
+                resetWatchdog();
             }
             watchdogTimestamp = current;
         }
