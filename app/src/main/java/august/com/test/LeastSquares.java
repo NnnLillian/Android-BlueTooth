@@ -14,6 +14,9 @@ public class LeastSquares {
 
     //返回估计的y值
     public static double estimate(float[] x, float[] y, float input) {
+        for (int i = 0; i < y.length; i++) {
+            y[i] = (float) Math.log(y[i]);
+        }
         float aTemp = getA(x, y);
         float bTemp = getB(x, y);
         System.out.println("线性回归系数a值：\t" + aTemp + "\n" + "线性回归系数b值：\t" + bTemp);
