@@ -80,18 +80,28 @@ public class stateFragment extends Fragment {
             public void onFailure() {
                 Log.e("Dog:", "WANG WANG");
                 // 将时间发送到主线程，更新UI
-                postWatchDogWarning();
+                postWarning("WatchDog");
+            }
+
+            @Override
+            public void onCheck() {
+                Log.e("Pressure", "over limit");
+                //
+                postWarning("PressureLimit");
             }
         };
         controller.registerStateEventListener(listener);
     }
 
-    void postWatchDogWarning() {
+    void postWarning(final String type) {
         final MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mainActivity.onAlertStopMsg();
+                if (type.compareTo("WatchDog") == 0)
+                    mainActivity.onAlertStopMsg();
+                else if (type.compareTo("PressureLimit") == 0)
+                    mainActivity.onAlertLeakCheck();
             }
         });
     }

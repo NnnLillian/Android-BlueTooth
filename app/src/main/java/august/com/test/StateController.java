@@ -29,8 +29,10 @@ enum State {
 abstract class StateEventListener {
     /* this function is triggered when data changed */
     void onUpdate() { /* empty code block*/ }
+
     /* this function is triggered when watch dog check failed */
     void onFailure() { /* empty code block*/ }
+
     /* this function is triggered when pressure exceeded the limit */
     void onCheck() { /* empty code block*/ }
 }
@@ -43,6 +45,8 @@ public class StateController {
     //接收到的字符串
     String times = "";
     String pressure = "";
+
+    String pressureKPa = "";
     String temperature = "";
     String flow = "";
     double flows;
@@ -57,13 +61,27 @@ public class StateController {
     String currentUnit = "British";
     State state = State.DISCONNECT;
 
-    boolean leakCheck = false;
+    boolean leakCheck = false; // 检测是否泄漏，只能发送一次onCheck监听事件
+
+    boolean forceStopped = false; // 机器是否强制stopped
+
+    float pressureLowerBound = 12.0f;
     float pressureUpperBound = 15.0f;
 
     DBHelper helper;
 
     Timer watchDogTimer;
     long watchdogTimestamp = -1l;
+
+
+    boolean isLeak() {
+        assert !Float.isNaN(Float.parseFloat(pressureKPa)) : "bad pressure ";
+        return Float.parseFloat(pressureKPa) > pressureLowerBound;
+    }
+
+    boolean isForceStopped() {
+        return forceStopped;
+    }
 
     void insertHistory(String receiveData) {
 
@@ -248,12 +266,12 @@ public class StateController {
         System.out.println(pureData);
         String item[] = pureData.split(",");
         times = item[1];
-        pressure = item[2];
+        pressure = pressureKPa = item[2];
         temperature = item[3];
         flow = item[4];
         flows = Double.parseDouble(flow);
-
-//        pressureCheck();
+        // 检查气压是否超标
+        pressureCheck();
 
         // 指数函数拟合
         float[] x = selectCalibrationByColumn("pressure");
@@ -332,16 +350,19 @@ public class StateController {
         }
         setAir8SmokeLayout(state);
     }
-//
-//    public void pressureCheck() {
-//        float p = Float.parseFloat(pressure);
-//        if (p > pressureUpperBound && leakCheck == false) {
-//
-//            leakCheck = true;
-//        }
-//    }
+
+    public void pressureCheck() {
+        float p = Float.parseFloat(pressureKPa);
+        if (p > pressureUpperBound && !leakCheck) {
+            for (StateEventListener l : stateEventListeners) {
+                l.onCheck();
+            }
+            leakCheck = true;
+        }
+    }
 
     public void tryStartWatchdog() {
+        forceStopped = false;
         if (isWorking() && watchDogTimer == null) {
             watchdogTimestamp = System.currentTimeMillis();
             watchDogTimer = new Timer();
@@ -371,6 +392,7 @@ public class StateController {
             watchdogTimestamp = current;
         }
     }
+
     public void setAir8SmokeLayout(State state) {
         LinearLayout tAIR, tSMOKE;
         // 赋值air和smoke两个linear layout模块
@@ -399,11 +421,17 @@ public class StateController {
         updateTable();
     }
 
+    public String getPressureKPa() {
+        return pressureKPa;
+    }
+
     public void updateTable() {
         for (StateEventListener l : stateEventListeners)
             l.onUpdate();
     }
+
     ArrayList<StateEventListener> stateEventListeners = new ArrayList<StateEventListener>();
+
     void registerStateEventListener(StateEventListener listener) {
         if (stateEventListeners.indexOf(listener) < 0) {
             stateEventListeners.add(listener);
