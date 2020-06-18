@@ -76,7 +76,7 @@ public class StateController {
 
     boolean isLeak() {
         assert !Float.isNaN(Float.parseFloat(pressureKPa)) : "bad pressure ";
-        return Float.parseFloat(pressureKPa) > pressureLowerBound;
+        return Float.parseFloat(pressureKPa) < pressureLowerBound;
     }
 
     boolean isForceStopped() {
@@ -347,6 +347,7 @@ public class StateController {
                 }
                 setPanelData();
                 resetWatchdog();
+                forceStopped = true;
                 break;
         }
         setAir8SmokeLayout(state);

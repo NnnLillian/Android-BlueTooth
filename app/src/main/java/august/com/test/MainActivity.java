@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -15,18 +16,27 @@ import android.util.Pair;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.util.Log;
 import android.view.Menu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager tViewPager;
     private MenuItem menuItem;
     private BottomNavigationView tNavigator;
-
+    private int remainTicks;
+    private boolean isLeak;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -269,6 +280,82 @@ public class MainActivity extends AppCompatActivity {
                         controller.sendMsg("OFF");
                     }
                 }).create().show();
+    }
+
+    /**
+     * leak check dialog
+     */
+    public void onAlertLeakCheck() {
+        remainTicks = 6;
+        final View dialogView = View.inflate(MainActivity.this, R.layout.dialog_timer, null);
+        final StateController controller = StateController.get();
+        final AlertDialog ad = new AlertDialog.Builder(MainActivity.this)
+                .setCancelable(false)
+                .setView(dialogView)
+                .setPositiveButton("OFF", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast tast = Toast.makeText(MainActivity.this, "Stop detect" + "\n" + "Stop machine", Toast.LENGTH_LONG);
+                        tast.setGravity(Gravity.CENTER, 0, 0);
+                        tast.show();
+                        controller.sendMsg("OFF");
+                    }
+                }).create();
+        final Timer tickTimer = new Timer();
+        final ImageView h = dialogView.findViewById(R.id.hourglass_image);
+        TimerTask tickTask = new TimerTask() {
+            @Override
+            public void run() {
+                isLeak |= controller.isLeak();
+                if (controller.isForceStopped() || remainTicks-- <= 0) {
+                    // close alert dialog
+                    ad.cancel();
+                    cancel();
+                    tickTimer.cancel();
+
+                    // post toast
+                    if (!controller.isForceStopped()) {
+                        Looper.prepare();
+                        if (controller.isLeak()) {
+                            Toast toast = Toast.makeText(getApplicationContext(), "Leakage risk, please detect again", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                        } else {
+                            Toast toast = Toast.makeText(getApplicationContext(), "No Leak", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                        }
+                        Looper.loop();
+                    }
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String pressure = controller.getPressureKPa();
+                        TextView t = dialogView.findViewById(R.id.timer);
+                        TextView p = dialogView.findViewById(R.id.current_pressure);
+                        if (t != null)
+                            t.setText(String.valueOf(remainTicks));
+                        if (p != null)
+                            p.setText(pressure);
+                    }
+                });
+            }
+        };
+        Window window = ad.getWindow();
+        WindowManager.LayoutParams attributes = window.getAttributes();
+        attributes.alpha = 0.6f;
+        window.setAttributes(attributes);
+        ad.show();
+        // 开启hourglass旋转动画
+        Animation operatingAnim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.hourglass_image_rotate);
+        LinearInterpolator lin = new LinearInterpolator();
+        operatingAnim.setInterpolator(lin);
+        if (operatingAnim != null) {
+            h.startAnimation(operatingAnim);
+        }
+
+        tickTimer.schedule(tickTask, 0, 1000);
     }
 
     @Override
