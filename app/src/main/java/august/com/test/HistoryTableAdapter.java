@@ -65,7 +65,6 @@ public class HistoryTableAdapter extends BaseAdapter {
 
         return convertView;
     }
-
     public static class ViewHolder {
         public TextView time;
         public TextView LeakSize;

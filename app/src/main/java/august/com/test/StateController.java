@@ -446,6 +446,17 @@ public class StateController {
 
     public void setUnit(String unit) {
         currentUnit = unit;
+        switch (currentUnit) {
+            case "British":
+                pressureUnit = "PSI";
+                temperatureUnit = " °F";
+                break;
+            case "Metric":
+                pressureUnit = "KPA";
+                temperatureUnit = " ℃";
+                break;
+        }
+        setUnitText(pressureUnit, temperatureUnit);
         updateTable();
     }
 

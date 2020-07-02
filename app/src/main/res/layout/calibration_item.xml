@@ -16,7 +16,7 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:singleLine="true"
-        android:text="Pressure Value"
+        android:text="Pressure (kPa)"
         android:textColor="#fff"
         android:textSize="18sp"/>
 
@@ -30,7 +30,7 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:singleLine="true"
-        android:text="Leak Size Value"
+        android:text="Leak Size (mm)"
         android:textColor="#fff"
         android:textSize="18sp" />
 

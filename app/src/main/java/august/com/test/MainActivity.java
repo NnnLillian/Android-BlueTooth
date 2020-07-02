@@ -174,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
     public void onAlertExchangeDialog() {
         final String[] units_item = {"British", "Metric"};
         new AlertDialog.Builder(MainActivity.this)
-                .setTitle("Which one?")
                 .setItems(units_item, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -251,8 +250,13 @@ public class MainActivity extends AppCompatActivity {
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();
                         } else {
-                            controller.deleteCalibration(strA, strB);
-                            Toast toast = Toast.makeText(MainActivity.this, "SUCCESS", Toast.LENGTH_LONG);
+                            int deleteCount = controller.deleteCalibration(strA, strB);
+                            Toast toast = Toast.makeText(MainActivity.this, "", Toast.LENGTH_LONG);
+                            if (deleteCount > 0) {
+                                toast.setText("DELETE SUCCESS");
+                            } else {
+                                toast.setText("DELETE FAIL");
+                            }
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();
                         }
@@ -286,9 +290,9 @@ public class MainActivity extends AppCompatActivity {
      * leak check dialog
      */
     public void onAlertLeakCheck() {
-        remainTicks = 6;
         final View dialogView = View.inflate(MainActivity.this, R.layout.dialog_timer, null);
         final StateController controller = StateController.get();
+        remainTicks = (int) controller.remainTime();
         final AlertDialog ad = new AlertDialog.Builder(MainActivity.this)
                 .setCancelable(false)
                 .setView(dialogView)
