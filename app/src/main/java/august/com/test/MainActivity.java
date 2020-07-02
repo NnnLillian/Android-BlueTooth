@@ -358,6 +358,33 @@ public class MainActivity extends AppCompatActivity {
         tickTimer.schedule(tickTask, 0, 1000);
     }
 
+    public void onAlertChangeBoundDialog(final String type) {
+//        View dialogView = View.inflate(MainActivity.this, R.layout.dialog_add_param, null);
+        final EditText newBound = new EditText(this);
+        newBound.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        final StateController controller = StateController.get();
+        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                .setTitle("UPDATE " + type + (type.equals("REMAIN_TIME") ? "" : "BOUND"))
+                .setView(newBound)
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String input = newBound.getText().toString();
+                        if (input.equals("")) {
+                            Toast.makeText(getApplicationContext(), "No Change！" + input, Toast.LENGTH_LONG).show();
+                        } else {
+                            controller.updateDetection(Float.parseFloat(input), type);
+                        }
+                    }
+                }).create();
+        dialog.show();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

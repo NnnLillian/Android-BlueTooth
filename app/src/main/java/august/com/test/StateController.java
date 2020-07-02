@@ -65,9 +65,6 @@ public class StateController {
 
     boolean forceStopped = false; // 机器是否强制stopped
 
-    float pressureLowerBound = 12.0f;
-    float pressureUpperBound = 15.0f;
-
     DBHelper helper;
 
     Timer watchDogTimer;
@@ -76,7 +73,7 @@ public class StateController {
 
     boolean isLeak() {
         assert !Float.isNaN(Float.parseFloat(pressureKPa)) : "bad pressure ";
-        return Float.parseFloat(pressureKPa) < pressureLowerBound;
+        return Float.parseFloat(pressureKPa) < pressureLowerBound();
     }
 
     boolean isForceStopped() {
@@ -105,9 +102,9 @@ public class StateController {
         updateTable();
     }
 
-    void deleteCalibration(String pressureValue, String leakSizeValue) {
-        helper.getWritableDatabase().delete("calibration", "pressure = ? and LeakSize = ?", new String[]{pressureValue, leakSizeValue});
+    int deleteCalibration(String pressureValue, String leakSizeValue) {
         updateTable();
+        return helper.getWritableDatabase().delete("calibration", "pressure = ? and LeakSize = ?", new String[]{pressureValue, leakSizeValue});
     }
 
     float[] selectCalibrationByColumn(String column) {
@@ -123,6 +120,25 @@ public class StateController {
             cursor.moveToNext();
         }
         return list;
+    }
+
+    void updateDetection(float v, String type) {
+        helper.putConfig(type.toLowerCase(), v);
+        for (StateEventListener l : stateEventListeners)
+            l.onUpdate();
+    }
+
+
+    public float pressureUpperBound() {
+        return helper.getConfig("upper", 15.f);
+    }
+
+    public float pressureLowerBound() {
+        return helper.getConfig("lower", 12.f);
+    }
+
+    public float remainTime() {
+        return helper.getConfig("remain_time", 20);
     }
 
 //    String[] selectCalibrationLeakSize() {
@@ -256,6 +272,11 @@ public class StateController {
         setPanelData("0.00", "00.0", "00.0", "0.00", "0.00", "PSI", "°F", "No Connection");
     }
 
+    void setUnitText(String PrUnit, String TeUnit) {
+        setTextViewHelper(R.id.PRunit, PrUnit, "PSI");
+        setTextViewHelper(R.id.TEunit, TeUnit, "°F");
+    }
+
     void updateStatus(String ReceiveData) {
         feedWatchdog();
         String line[] = ReceiveData.split("\n");
@@ -355,7 +376,7 @@ public class StateController {
 
     public void pressureCheck() {
         float p = Float.parseFloat(pressureKPa);
-        if (p > pressureUpperBound && !leakCheck) {
+        if (p > pressureUpperBound() && !leakCheck) {
             for (StateEventListener l : stateEventListeners) {
                 l.onCheck();
             }

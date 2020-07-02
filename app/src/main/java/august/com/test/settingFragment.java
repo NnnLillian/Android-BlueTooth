@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,13 +36,14 @@ public class settingFragment extends Fragment {
             public void updateFragment(int i) {
                 updateUnit();
                 getTable();
+                updateBound();
             }
         };
         final ActivityController controller = ActivityController.get();
         controller.registerFragmentChangeListener(listener);
 
         final MainActivity mainActivity = (MainActivity) getActivity();
-        final Button btnExchangeUnit = getView().findViewById(R.id.exchangeUnit);
+        final ImageButton btnExchangeUnit = getView().findViewById(R.id.exchangeUnit);
         btnExchangeUnit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,16 +72,30 @@ public class settingFragment extends Fragment {
             void onUpdate() {
                 updateUnit();
                 getTable();
+                updateBound();
             }
         };
         stateController.registerStateEventListener(stateEventListener);
 
-
-        final Button test = getView().findViewById(R.id.test);
-        test.setOnClickListener(new View.OnClickListener() {
+        final ImageButton btnUpBound = getView().findViewById(R.id.upper_bound_btn);
+        btnUpBound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                System.out.println(stateController.selectCalibrationPressure());
+                mainActivity.onAlertChangeBoundDialog("UPPER");
+            }
+        });
+        final ImageButton btnLowBound = getView().findViewById(R.id.lower_bound_btn);
+        btnLowBound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainActivity.onAlertChangeBoundDialog("LOWER");
+            }
+        });
+        final ImageButton btnRemainTime = getView().findViewById(R.id.remain_time_btn);
+        btnRemainTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainActivity.onAlertChangeBoundDialog("REMAIN_TIME");
             }
         });
     }
@@ -110,5 +124,17 @@ public class settingFragment extends Fragment {
         ListView tableListView = getView().findViewById(R.id.calibration_list);
         CalibrationTableAdapter adapter = new CalibrationTableAdapter(getActivity(), list);
         tableListView.setAdapter(adapter);
+    }
+
+    void updateBound() {
+        StateController stateController = StateController.get();
+//        stateController.restartDetection();
+        TextView upperBound = getView().findViewById(R.id.pressure_upper_bound);
+        TextView lowerBound = getView().findViewById(R.id.pressure_lower_bound);
+        TextView remainTime = getView().findViewById(R.id.remain_time);
+
+        upperBound.setText(String.format("%.2f kPa", stateController.pressureUpperBound()));
+        lowerBound.setText(String.format("%.2f kPa", stateController.pressureLowerBound()));
+        remainTime.setText(String.format("%d(s)", (int)stateController.remainTime()));
     }
 }
