@@ -42,39 +42,37 @@ public class StateController {
 
     protected View view;
 
-    //接收到的字符串
+    /**
+     * 接收到的字符串将被分割为以下多个
+     */
     String times = "";
     String pressure = "";
-
+    /**
+     * 初始情况 pressure = pressureKPa
+     * 之后pressureKPa储存当单位为Kpa之后的压强值
+     */
     String pressureKPa = "";
     String temperature = "";
     String flow = "";
     double flows;
-    //计算得出的字符串
+    /** 通过计算得到的结果与对应字符串 */
     String LeakResult = "";
     double LeakResults;
-    //计算参数
-    double paramA = 0.05;
-    double paramB = 0.015;
+    /** 初始英制单位 */
     String pressureUnit = "PSI";
     String temperatureUnit = "°F";
     String currentUnit = "British";
+    /** 初始状态 */
     State state = State.DISCONNECT;
-
-    boolean leakCheck = false; // 检测是否泄漏，只能发送一次onCheck监听事件
-
-    boolean forceStopped = false; // 机器是否强制stopped
-
+    /** 检测是否泄漏，只能发送一次onCheck监听事件 */
+    boolean leakCheck = false;
+    /** 机器是否强制被stopped */
+    boolean forceStopped = false;
+    /** 数据库 */
     DBHelper helper;
 
     Timer watchDogTimer;
     long watchdogTimestamp = -1l;
-
-
-    boolean isLeak() {
-        assert !Float.isNaN(Float.parseFloat(pressureKPa)) : "bad pressure ";
-        return Float.parseFloat(pressureKPa) < pressureLowerBound();
-    }
 
     boolean isForceStopped() {
         return forceStopped;

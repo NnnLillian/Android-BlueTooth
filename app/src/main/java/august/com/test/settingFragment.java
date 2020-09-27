@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -98,6 +99,16 @@ public class settingFragment extends Fragment {
                 mainActivity.onAlertChangeBoundDialog("REMAIN_TIME");
             }
         });
+
+//        final Button test = getView().findViewById(R.id.test);
+//        test.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                mainActivity.onAlertChangeBoundDialog("LOWER");
+////                LeastSquares.main(new float[1][],5);
+//                mainActivity.onAlertLeakCheck() ;
+//            }
+//        });
     }
 
     void updateUnit() {

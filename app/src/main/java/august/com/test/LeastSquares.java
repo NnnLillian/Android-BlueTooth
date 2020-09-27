@@ -3,7 +3,7 @@ package august.com.test;
 /**
  * 功能：最小二乘法 线性回归（Least squares）
  * <p>
- * y= a * exp(bx)
+ * y = a * exp(bx)
  * lny = lna + bx
  * <p>
  * y = ax + b

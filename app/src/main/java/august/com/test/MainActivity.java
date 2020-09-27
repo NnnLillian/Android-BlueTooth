@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         final BluetoothConnector connector = BluetoothConnector.get();
         // 判断蓝牙是否打开
-        // 获取待连接蓝牙设备列表
+        // 开始搜索，获取可连接的蓝牙设备列表
         connector.init();
         if (!connector.isAvailable()) {
             Toast.makeText(this, "No supporting Bluetooth", Toast.LENGTH_LONG).show();
@@ -126,10 +126,11 @@ public class MainActivity extends AppCompatActivity {
 
         List<String> names = new ArrayList<String>();
         final List<String> addresses = new ArrayList<String>();
+        // 获取已配对的蓝牙设备列表
         ArrayList<Pair<String, String>> addressList = connector.getDevicesList();
 
-        // 寻找已经配对设备
         if (addressList.isEmpty()) {
+            // 如果没有已配对的蓝牙设备，就弹窗提醒
             builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Remind");
             builder.setMessage("Sorry, No paired bluetooth devices now, Please pair the bluetooth device first");
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         }
         // 下拉菜单定义一个数组适配器，这个数组适配器就用到之前定义的names，装的都是list所添加的内容
         arr_adapter = new ArrayAdapter<String>(this, R.layout.spinner_item, names);
-        // 为适配器设置下来菜单样式
+        // 为适配器设置下拉菜单样式
         arr_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // 以上声明完毕后，加载适配器
         Spinner spinner = this.findViewById(R.id.spinner);
@@ -151,9 +152,10 @@ public class MainActivity extends AppCompatActivity {
         // 为下拉列表设置各种点击事件，一响应菜单中的文本item被选中，用setOnItemSelectedListener
         spinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                // 如果app已经连接其他蓝牙的时候，又重新选择了新的设备，那将用stateController断开连接（resetBluetooth())
                 StateController stateController = StateController.get();
                 stateController.resetBluetooth();
-                // 所执行事件
+                // 主controller所执行事件
                 controller.setAddress(addresses.get(arg2));
                 Toast.makeText(getApplicationContext(), "Selected: " + arr_adapter.getItem(arg2), Toast.LENGTH_LONG).show();
             }
@@ -310,24 +312,31 @@ public class MainActivity extends AppCompatActivity {
         TimerTask tickTask = new TimerTask() {
             @Override
             public void run() {
-                isLeak |= controller.isLeak();
+                // isLeak |= controller.isLeak();
+                isLeak = false;
                 if (controller.isForceStopped() || remainTicks-- <= 0) {
                     // close alert dialog
                     ad.cancel();
                     cancel();
                     tickTimer.cancel();
 
-                    // post toast
+                    // post result dialog
                     if (!controller.isForceStopped()) {
+                        // UI线程都是Looper线程，每个Looper线程中维护一个消息队列
                         Looper.prepare();
-                        if (controller.isLeak()) {
-                            Toast toast = Toast.makeText(getApplicationContext(), "Leakage risk, please detect again", Toast.LENGTH_LONG);
-                            toast.setGravity(Gravity.CENTER, 0, 0);
-                            toast.show();
+                        if (!isLeak) {
+                            new AlertDialog.Builder(MainActivity.this)
+                                    .setTitle("Leakage Risk")
+                                    .setIcon(R.drawable.ic_cancel_red_24dp)
+                                    .setMessage("please detect again")
+                                    .setCancelable(true)
+                                    .create().show();
                         } else {
-                            Toast toast = Toast.makeText(getApplicationContext(), "No Leak", Toast.LENGTH_LONG);
-                            toast.setGravity(Gravity.CENTER, 0, 0);
-                            toast.show();
+                            new AlertDialog.Builder(MainActivity.this)
+                                    .setTitle("No Leak")
+                                    .setIcon(R.drawable.ic_check_circle_green_24dp)
+                                    .setCancelable(true)
+                                    .create().show();
                         }
                         Looper.loop();
                     }
