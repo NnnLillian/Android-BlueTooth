@@ -12,3 +12,5 @@
 
 #### 界面预览
 [![2m3DuF.png](https://z3.ax1x.com/2021/05/31/2m3DuF.png)](https://imgtu.com/i/2m3DuF)
+
+> 打包完成的apk文件在demo文件夹中。
